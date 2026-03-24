@@ -8,7 +8,7 @@ interface ThemeState {
 
 export const useThemeStore = defineStore('theme', {
   state: (): ThemeState => ({
-    theme: 'light',
+    theme: THEME.DARK,
   }),
 
   actions: {
@@ -18,7 +18,6 @@ export const useThemeStore = defineStore('theme', {
       if (saved) {
         this.theme = saved;
       } else {
-        // системная тема
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         this.theme = prefersDark ? THEME.DARK : THEME.LIGHT;
       }
