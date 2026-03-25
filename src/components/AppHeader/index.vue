@@ -11,11 +11,13 @@
       </div>
       <CustomInput
         v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
-        v-model="searchQuery"
-        :autocomplete-data="arr"
-        @update:model-value="searchCity"
-        @selectAutocompleteItem="selectCity"
+        v-model:inputValue="searchQuery"
+        :options="arr"
+        :selectedItem="selectedCity"
+        @update:inputValue="searchCity"
+        @update:selectedItem="selectCity"
       />
+      <button @click="clearInput">clear input</button>
       <!-- <button @click="increase">asd</button> -->
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
@@ -31,17 +33,20 @@ import { ref } from "vue";
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
-const arr = ref<number[]>([]);
+const arr = ref<string[]>([]);
 function searchCity(val: string) {
   if (val) {
-    arr.value.push(1);
+    arr.value.push('1');
   } else {
     arr.value = [];
   }
 }
-
+const selectedCity = ref("");
 function selectCity(val: string | number) {
-  console.log(val);
+  selectedCity.value = val as string;
+}
+function clearInput() {
+ selectedCity.value = "";
 }
 </script>
 
