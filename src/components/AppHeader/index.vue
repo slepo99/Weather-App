@@ -38,6 +38,7 @@ const router = useRouter();
 .app-header__left {
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 24px;
 }
 .app-logo {
@@ -52,5 +53,6 @@ const router = useRouter();
 .app-logo__title {
   font-size: 24px;
   font-weight: 700;
+  white-space: nowrap;
 }
 </style>
