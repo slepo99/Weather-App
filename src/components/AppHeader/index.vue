@@ -9,19 +9,39 @@
         />
         <span class="app-logo__title">Weather App</span>
       </div>
-      <SearchBar v-if="router.currentRoute.value.fullPath === ROUTES.HOME" />
+      <CustomInput
+        v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
+        v-model="searchQuery"
+        :autocomplete-data="arr"
+        @update:model-value="searchCity"
+      />
+      <button @click="increase">asd</button>
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
 </template>
 
 <script setup lang="ts">
-import SearchBar from "./SearchBar.vue";
+import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
+import { ref } from "vue";
 const themeStore = useThemeStore();
 const router = useRouter();
+const searchQuery = ref("");
+const arr = ref<number[]>([])
+function searchCity(val: string) {
+  console.log(val)
+}
+function increase() {
+  if(arr.value.length) {
+    arr.value = []
+  } else {
+    arr.value.push(1);
+  }
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -33,7 +53,7 @@ const router = useRouter();
   justify-content: space-between;
   border-radius: 0 0 10px 10px;
   background-color: var(--content-bg);
-  box-shadow: $content-shadow;
+  box-shadow: $block-shadow;
 }
 .app-header__left {
   display: flex;
@@ -45,6 +65,7 @@ const router = useRouter();
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 .app-logo__image {
   width: 40px;
