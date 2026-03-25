@@ -14,8 +14,9 @@
         v-model="searchQuery"
         :autocomplete-data="arr"
         @update:model-value="searchCity"
+        @selectAutocompleteItem="selectCity"
       />
-      <button @click="increase">asd</button>
+      <!-- <button @click="increase">asd</button> -->
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
@@ -30,18 +31,18 @@ import { ref } from "vue";
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
-const arr = ref<number[]>([])
+const arr = ref<number[]>([]);
 function searchCity(val: string) {
-  console.log(val)
-}
-function increase() {
-  if(arr.value.length) {
-    arr.value = []
-  } else {
+  if (val) {
     arr.value.push(1);
+  } else {
+    arr.value = [];
   }
 }
 
+function selectCity(val: string | number) {
+  console.log(val);
+}
 </script>
 
 <style scoped lang="scss">

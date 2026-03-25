@@ -1,41 +1,102 @@
 <template>
-  <div class="input-container" :style="`max-width: ${props.width ? props.width : '300'}px`">
+  <div
+    class="input-container"
+    ref="containerRef"
+    :style="`max-width: ${props.width ? props.width : '300'}px`"
+  >
     <input
       :value="modelValue"
-      @input="
-        emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      "
+      @input="onInput"
+      @focus="onFocus"
       :disabled="disabled"
       :placeholder="props.label || 'Type something...'"
       type="text"
       class="input-bar"
     />
+
     <div
-      :class="{
-        'input-autocomplete-active':
-          props.autocompleteData && props.autocompleteData?.length,
-      }"
+      :class="{ 'input-autocomplete-active': isOpen }"
       class="input-autocomplete"
     >
-      <div v-for="value in 30" :key="value" class="autocomplite-element">
-        {{ value }}
+      <div
+        v-for="(value, i) in props.autocompleteData"
+        :key="i"
+        class="autocomplite-element"
+      >
+        <div @mousedown="selectItem(value)">
+          {{ value }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
+
 interface Props {
   modelValue: string;
   label?: string;
   error?: string;
   disabled?: boolean;
-  autocompleteData?: string | number[];
+  autocompleteData?: (string | number)[];
   width?: string | number;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "selectAutocompleteItem"]);
+
+const containerRef = ref<HTMLElement | null>(null);
+const isOpen = ref(false);
+const isFocused = ref(false);
+
+
+const onInput = (e: Event) => {
+  const value = (e.target as HTMLInputElement).value;
+  emit("update:modelValue", value);
+};
+const onFocus = () => {
+  isFocused.value = true;
+  if (props.autocompleteData?.length) {
+    isOpen.value = true;
+  }
+};
+
+function selectItem(val: string | number) {
+  emit("selectAutocompleteItem", val);
+  emit("update:modelValue", "");
+  isOpen.value = false;
+}
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (!containerRef.value) return;
+
+  if (!containerRef.value.contains(event.target as Node)) {
+    isOpen.value = false;
+    isFocused.value = false;
+  }
+};
+
+watch(
+  () => props.autocompleteData?.length,
+  (len) => {
+    if (isFocused.value && len) {
+      isOpen.value = true;
+    } else {
+      isOpen.value = false;
+    }
+  }
+);
+
+
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <style scoped lang="scss">
@@ -45,33 +106,25 @@ const emit = defineEmits(["update:modelValue"]);
   gap: 4px;
   flex: 1;
   position: relative;
-  transition: all 0.3s ease;
 }
+
 .input-bar {
   background-color: var(--content-bg);
-  border: none;
   border-radius: 6px;
   height: 32px;
-  max-width: 100%;
   width: 100%;
   border: 1px solid rgba(59, 130, 246, 0.4);
   color: var(--text);
   padding: 0 12px;
-  transition: all 0.3s ease;
   z-index: 2;
 }
-.input-focused {
-  box-shadow: $content-shadow;
-}
-.input-bar::placeholder {
-  color: var(--text);
-}
+
 .input-bar:focus {
   outline: none;
   box-shadow: $content-shadow;
-  transition: all 0.3 ease;
-  border: 0px;
+  border: 0;
 }
+
 .input-autocomplete {
   position: absolute;
   top: 30px;
@@ -79,24 +132,27 @@ const emit = defineEmits(["update:modelValue"]);
   border-radius: 6px;
   box-shadow: $block-shadow;
   padding: 8px 0;
-  z-index: 1;
   width: 100%;
   overflow: hidden;
+
   transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.25s ease;
+
   max-height: 240px;
 }
+
 .input-autocomplete-active {
-  overflow-y: auto;
   transform: scaleY(1);
+  overflow-y: auto;
 }
+
 .autocomplite-element {
   cursor: pointer;
-  transition: all 0.2s ease;
   height: 24px;
   padding: 0 8px;
 }
+
 .autocomplite-element:hover {
   background-color: rgba(59, 130, 246, 0.2);
 }
