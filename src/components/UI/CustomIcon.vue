@@ -1,7 +1,19 @@
 <template>
-  <div>
-    <img v-if="isRemote" :src="remoteUrl" />
-    <img v-else-if="isLocal && localUrl" :src="localUrl" />
+  <div class="custom-icon" :style="containerStyle">
+    <img
+      v-if="isRemote"
+      :src="remoteUrl"
+      :alt="props.name"
+      :style="imageStyle"
+      class="icon-image"
+    />
+    <img
+      v-else-if="isLocal && localUrl"
+      :src="localUrl"
+      :alt="props.name"
+      :style="imageStyle"
+      class="icon-image"
+    />
   </div>
 </template>
 
@@ -12,11 +24,11 @@ const props = withDefaults(
   defineProps<{
     name: string;
     size?: string | number;
-    color?: string;
+    backgroundColor?: string;
   }>(),
   {
     size: 24,
-    color: "currentColor",
+    backgroundColor: "transparent",
   },
 );
 
@@ -35,6 +47,33 @@ const localUrl = computed(() => {
     return "";
   }
 });
+
+const containerStyle = computed(() => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: getSize.value,
+  height: getSize.value,
+  backgroundColor: props.backgroundColor,
+}));
+const imageStyle = computed(() => ({
+  width: getSize.value,
+  height: getSize.value,
+  objectFit: "contain" as const,
+}));
+
+const getSize = computed(() => {
+  if (typeof props.size === "number") return `${props.size}px`;
+  return props.size || "20px";
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom-icon {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+</style>

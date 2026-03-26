@@ -18,11 +18,13 @@
         @update:inputValue="searchCity"
         @update:selectedItem="selectCity"
       />
+      
       <CustomBtn>
-        <template #icon>
-          <CustomIcon name="https://openweathermap.org/payload/api/media/file/10d%402x.png" size="20" />
+        <template #label>
+          Додати місто
         </template>
       </CustomBtn>
+        
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
@@ -35,7 +37,7 @@ import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
 import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
-import CustomIcon from "../UI/CustomIcon.vue";
+
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");

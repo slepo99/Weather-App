@@ -209,4 +209,7 @@ onBeforeUnmount(() => {
   pointer-events: none;
   color: var(--text);
 }
+span {
+  font-size: 14px;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="qwe">
-qwe
+
     </div>
 </template>
 
@@ -9,7 +9,5 @@ qwe
 </script>
 
 <style scoped lang="scss">
-.qwe {
-    background-color:var(--bg)  ;
-}
+
 </style>
