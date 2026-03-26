@@ -2,7 +2,7 @@
   <div
     class="input-container"
     ref="containerRef"
-    :style="`max-width: ${props.width ? props.width : '300'}px`"
+    :style="`max-width: ${props.width}px`"
   >
     <div class="input-wrapper">
       <input
@@ -14,11 +14,11 @@
         type="text"
         class="input-bar"
       />
-      <div class="input-selected-content">
-        <span v-if="selectedItem">{{ selectedItem }}</span>
+     <div v-if="props.selectMode && selectedItem" class="input-selected-content">
+        {{ selectedItem }}
       </div>
       <button
-        v-if="inputValue || selectedItem"
+        v-if="inputValue || props.selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -27,6 +27,7 @@
       </button>
     </div>
     <div
+      v-if="props.selectMode"
       :class="{ 'input-autocomplete-active': isOpen }"
       class="input-autocomplete"
     >
@@ -48,6 +49,7 @@ import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
 
 interface Props {
   inputValue: string;
+  selectMode?: boolean;
   selectedItem?: string | number;
   options?: (string | number)[];
   label?: string;
@@ -56,14 +58,19 @@ interface Props {
   width?: string | number;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  selectMode: false,
+  options: () => [],
+  disabled: false,
+  width: '300',
+});
 const emit = defineEmits(["update:inputValue", "update:selectedItem"]);
 
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const isFocused = ref(false);
 const isInputDisabled = computed(() => {
-  return props.disabled || !!props.selectedItem;
+  return props.disabled || (props.selectMode && !!props.selectedItem);
 });
 
 const onInput = (e: Event) => {
@@ -102,7 +109,7 @@ function clearInput() {
 watch(
   () => props.options?.length,
   (len) => {
-    if (isFocused.value && len) {
+    if (isFocused.value && len && props.selectMode) {
       isOpen.value = true;
     } else {
       isOpen.value = false;

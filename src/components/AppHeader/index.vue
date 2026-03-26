@@ -12,13 +12,17 @@
       <CustomInput
         v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
         v-model:inputValue="searchQuery"
+        :selectMode="true"
         :options="arr"
         :selectedItem="selectedCity"
         @update:inputValue="searchCity"
         @update:selectedItem="selectCity"
       />
-      <button @click="clearInput">clear input</button>
-      <!-- <button @click="increase">asd</button> -->
+      <CustomBtn>
+        <template #icon>
+          <CustomIcon name="https://openweathermap.org/payload/api/media/file/10d%402x.png" size="20" />
+        </template>
+      </CustomBtn>
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
@@ -30,6 +34,8 @@ import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
 import { ref } from "vue";
+import CustomBtn from "../UI/CustomBtn.vue";
+import CustomIcon from "../UI/CustomIcon.vue";
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
@@ -45,9 +51,7 @@ const selectedCity = ref("");
 function selectCity(val: string | number) {
   selectedCity.value = val as string;
 }
-function clearInput() {
- selectedCity.value = "";
-}
+
 </script>
 
 <style scoped lang="scss">
