@@ -24,7 +24,7 @@
           Додати місто
         </template>
       </CustomBtn>
-        <CustomDropdown v-model="selected" :options="['UK', 'EN', 'ENqweqweqweqweqweqweqweqwe']" style="max-width: 200px;"/>
+        <CustomDropdown v-model="selected" :options="['UK', 'EN', 'ENqweqweqweqweqweqweqweqwe']" width="70px"/>
 
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>

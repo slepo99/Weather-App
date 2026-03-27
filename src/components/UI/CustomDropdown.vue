@@ -6,12 +6,11 @@
     role="combobox"
     aria-haspopup="listbox"
     :aria-expanded="isOpen"
-    @click="toggleDropdown"
+    :style="dropDownStyles"
+    @click.stop="toggleDropdown"
   >
     <div class="custom-dropdown">
-      <span class="selected-text">
-        {{ modelValue || props.placeholder || "Select an option" }}</span
-      >
+      <span class="selected-text text-default "> {{ modelValue || props.placeholder }}</span>
       <span class="dropdown-chevron" :class="{ rotated: isOpen }"> ▼ </span>
     </div>
     <div
@@ -22,6 +21,7 @@
         v-for="option in props.options"
         :key="option"
         class="custom-dropdown-element selected-text"
+        :class="{ selected: option === modelValue }"
         @click.stop="selectOption(option)"
       >
         <span class="option-text" :title="String(option)">
@@ -33,18 +33,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
-const props = defineProps<{
-  options: (string | number)[];
-  placeholder?: string;
-}>();
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+const props = withDefaults(
+  defineProps<{
+    options: (string | number)[];
+    placeholder?: string;
+    width?: string;
+  }>(),
+  {
+    placeholder: "Select an option",
+    width: "100%",
+  },
+);
 const modelValue = defineModel<string | number | null>({
   default: null,
   required: false,
 });
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
-
+const dropDownStyles = computed(() => {
+  return {
+    maxWidth: props.width,
+  };
+});
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
@@ -70,61 +81,6 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<!-- <style scoped lang="scss">
-.custom-dropdown-wrapper {
-  position: relative;
-}
-.custom-dropdown {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 4px 12px;
-  background-color: var(--btn-bg);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-  height: 32px;
-  z-index: 3 ;
-  position: relative;
-}
-.dropdown-chevron {
-  font-size: 12px;
-  transition: transform 0.25s ease;
-  margin-left: auto;
-}
-.custom-dropdown-options {
-  position: absolute;
-  top: 30px;
-  background-color: var(--content-bg);
-  border-radius: 6px;
-  box-shadow: $block-shadow;
-  padding: 8px 0;
-  width: 100%;
-  overflow: hidden;
-  transform-origin: top;
-  transform: scaleY(0);
-  transition: transform 0.25s ease;
-  z-index: 2;
-  max-height: 240px;
-}
-.custom-dropdown-options-active {
-  transform: scaleY(1);
-  overflow-y: auto;
-}
-.custom-dropdown-element {
-  cursor: pointer;
-  height: 24px;
-  padding: 0 8px;
-}
-
-.custom-dropdown-element:hover {
-  background-color: rgba(59, 130, 246, 0.2);
-}
-</style> -->
 <style scoped lang="scss">
 .custom-dropdown-wrapper {
   position: relative;
@@ -148,6 +104,20 @@ onBeforeUnmount(() => {
   width: 100%;
   z-index: 3;
   overflow: hidden;
+}
+.custom-dropdown:hover {
+  background-color: color-mix(in srgb, var(--btn-bg) 90%, black);
+}
+.custom-dropdown:active {
+  filter: brightness(0.8);
+  transform: scale(0.98);
+}
+.selected-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .dropdown-chevron {
@@ -174,7 +144,7 @@ onBeforeUnmount(() => {
   transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.25s ease;
-  z-index: 10;
+  z-index: 2;
   max-height: 240px;
 }
 
@@ -199,13 +169,7 @@ onBeforeUnmount(() => {
 .custom-dropdown-element.selected {
   font-weight: 500;
 }
-.selected-text {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-}
+
 .option-text {
   width: 100%;
   white-space: nowrap;
