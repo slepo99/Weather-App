@@ -18,14 +18,20 @@
         @update:inputValue="searchCity"
         @update:selectedItem="selectCity"
       />
-      
-      <CustomBtn>
-        <template #label>
-          Додати місто
-        </template>
-      </CustomBtn>
-        <CustomDropdown v-model="selected" :options="['UK', 'EN', 'ENqweqweqweqweqweqweqweqwe']" width="70px"/>
 
+      <CustomBtn>
+        <template #label> Додати місто </template>
+      </CustomBtn>
+      <CustomDropdown
+        v-model="selected"
+        :options="['UK', 'EN', 'ENqweqweqweqweqweqweqweqwe']"
+        width="70px"
+      />
+      <CustomSwitch
+        v-model="gender"
+        mode="select"
+        :options="[true, false]"
+      />
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
@@ -39,7 +45,7 @@ import { ROUTES } from "@/constants/routes";
 import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
-
+import CustomSwitch from "../UI/CustomSwitch.vue";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -48,7 +54,7 @@ const arr = ref<string[]>([]);
 const selected = ref<string | number>("");
 function searchCity(val: string) {
   if (val) {
-    arr.value.push('1');
+    arr.value.push("1");
   } else {
     arr.value = [];
   }
@@ -57,7 +63,7 @@ const selectedCity = ref("");
 function selectCity(val: string | number | null) {
   selectedCity.value = val as string;
 }
-
+const gender = ref(false)
 </script>
 
 <style scoped lang="scss">
