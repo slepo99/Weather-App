@@ -6,7 +6,7 @@
   >
     <div class="input-wrapper">
       <input
-        :value="inputValue"
+        :value="props.inputValue"
         @input="onInput"
         @focus="onFocus"
         :disabled="isInputDisabled"
@@ -14,11 +14,11 @@
         type="text"
         class="input-bar"
       />
-     <div v-if="props.selectMode && selectedItem" class="input-selected-content">
+     <div v-if="props.selectMode && props.selectedItem" class="input-selected-content">
         {{ selectedItem }}
       </div>
       <button
-        v-if="inputValue || props.selectedItem"
+        v-if="props.inputValue || props.selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -64,7 +64,10 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   width: '300',
 });
-const emit = defineEmits(["update:inputValue", "update:selectedItem"]);
+const emit = defineEmits<{
+  "update:inputValue": [value: string];          
+  "update:selectedItem": [value: string | number];
+}>();
 
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);

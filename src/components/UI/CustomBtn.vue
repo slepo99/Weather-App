@@ -1,22 +1,34 @@
 <template>
-  <button @click="handleClick" class="custom-btn">
+  <button @click="handleClick" :disabled="props.disabled" class="custom-btn">
     <slot name="icon"> </slot>
-    <span class="text-default btn-label">
-      <slot name="label"> </slot>
-    </span>
+    <div class="btn-label-wrapper">
+      <span class="text-default btn-label">
+        <slot name="label"> </slot>
+      </span>
+      <CustomLoader v-if="props.isLoading" />
+    </div>
   </button>
 </template>
 
 <script setup lang="ts">
-// interface Props {
-//   color?: string;
-// }
-// const props = defineProps<Props>();
+import CustomLoader from "./CustomLoader.vue";
 
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean;
+    isLoading?: boolean;
+  }>(),
+  {
+    disabled: false,
+    isLoading: false,
+  },
+);
 const emit = defineEmits(["click"]);
 
 const handleClick = () => {
-  emit("click");
+  if (!props.disabled && !props.isLoading) {
+    emit("click");
+  }
 };
 </script>
 
@@ -44,6 +56,11 @@ span {
 .custom-btn:active {
   filter: brightness(0.8);
   transform: scale(0.98);
+}
+.btn-label-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .btn-label {
   font-weight: 500;
