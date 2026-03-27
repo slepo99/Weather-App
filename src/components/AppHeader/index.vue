@@ -25,7 +25,7 @@
         </template>
       </CustomBtn>
         <CustomDropdown v-model="selected" :options="['UK', 'EN', 'ENqweqweqweqweqwe']" />
-        <Draft v-model="selected" :options="['UK', 'EN']" placeholder="Выберите город" />
+
     </div>
     <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
@@ -39,7 +39,6 @@ import { ROUTES } from "@/constants/routes";
 import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
-import Draft from "../UI/draft.vue";
 
 
 const themeStore = useThemeStore();
