@@ -1,37 +1,40 @@
 <template>
-  <div
-    class="switch"
-    :class="{
-      'switch--active': isActive,
-      'switch--select': mode === 'select',
-      'switch--disabled': disabled,
-    }"
-    @click="toggle"
-  >
-    <div class="switch__track"></div>
-    <div class="switch__thumb"></div>
+  <div class="switch-wrapper">
+    <slot name="label-left">
+      <div class="label-left">
+      </div>
+    </slot>
+    <div
+      class="switch"
+      :class="{
+        'switch--active': isActive,
+        'switch--disabled': props.disabled,
+        'switch--select': props.keepColor,
+      }"
+      @click="toggle"
+    >
+      <div class="switch__track"></div>
+      <div class="switch__thumb"></div>
+    </div>
+    <slot name="label-right">
+      <div class="label-right"></div>
+    </slot>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 
-const MODE_TYPES = {
-  BOOLEAN: "boolean",
-  SELECT: "select",
-} as const;
-type Mode = "boolean" | "select";
 const props = withDefaults(
   defineProps<{
     modelValue: boolean | string;
-    mode?: Mode;
     disabled?: boolean;
-    options?: [string, string] | [boolean, boolean];
+    keepColor?: boolean;
   }>(),
   {
     modelValue: false,
     disabled: false,
-    mode: "boolean",
+    keepColor: false,
   },
 );
 const emit = defineEmits(["update:modelValue"]);
@@ -39,16 +42,17 @@ const isActive = computed(() => {
   return props.modelValue;
 });
 function toggle() {
-  if (props.mode === MODE_TYPES.SELECT && props.options) {
-    const [a, b] = props.options;
-    emit("update:modelValue", props.modelValue === a ? b : a);
-  } else {
-    emit("update:modelValue", !props.modelValue);
-  }
+  emit("update:modelValue", !props.modelValue);
 }
 </script>
 
 <style scoped>
+.switch-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
 .switch {
   position: relative;
   width: 46px;
@@ -86,7 +90,6 @@ function toggle() {
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
-/* ===== BOOLEAN ===== */
 .switch--active .switch__track {
   background: #85b8b7;
 }
@@ -94,10 +97,9 @@ function toggle() {
 .switch--active .switch__thumb {
   transform: translateX(22px);
 }
-
-/* ===== SELECT ===== */
-/* всегда один цвет */
 .switch--select .switch__track {
   background: #018786;
+}
+.label-left {
 }
 </style>

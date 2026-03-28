@@ -24,16 +24,18 @@
       </CustomBtn>
       <CustomDropdown
         v-model="selected"
-        :options="['UK', 'EN', 'ENqweqweqweqweqweqweqweqwe']"
+        :options="['UK', 'EN', 'DE']"
         width="70px"
       />
-      <CustomSwitch
-        v-model="gender"
-        mode="select"
-        :options="[true, false]"
-      />
+      <CustomSwitch v-model="themeStore.isDark" @update:modelValue="themeStore.toggleTheme" keepColor>
+        <template #label-left>
+          <CustomIcon name="sun" />
+        </template>
+        <template #label-right>
+          <CustomIcon name="moon" />
+        </template>
+      </CustomSwitch>
     </div>
-    <button @click="themeStore.toggleTheme">Toggle Theme</button>
   </header>
 </template>
 
@@ -46,6 +48,7 @@ import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
+import CustomIcon from "../UI/CustomIcon.vue";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -63,7 +66,7 @@ const selectedCity = ref("");
 function selectCity(val: string | number | null) {
   selectedCity.value = val as string;
 }
-const gender = ref(false)
+const gender = ref(false);
 </script>
 
 <style scoped lang="scss">
