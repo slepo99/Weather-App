@@ -27,7 +27,7 @@ import { computed } from "vue";
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean | string;
+    modelValue: boolean;
     disabled?: boolean;
     keepColor?: boolean;
   }>(),
@@ -37,12 +37,15 @@ const props = withDefaults(
     keepColor: false,
   },
 );
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "change"]);
 const isActive = computed(() => {
   return props.modelValue;
 });
 function toggle() {
-  emit("update:modelValue", !props.modelValue);
+  if (props.disabled) return;
+  const newValue = !props.modelValue;
+  emit("update:modelValue", newValue);
+  emit("change", newValue);
 }
 </script>
 
@@ -100,6 +103,5 @@ function toggle() {
 .switch--select .switch__track {
   background: #018786;
 }
-.label-left {
-}
+
 </style>

@@ -1,41 +1,52 @@
+// src/components/AppHeader/index.vue
 <template>
-  <header class="container app-header">
-    <div class="app-header__left">
-      <div class="app-logo">
-        <img
-          src="../../assets/images/app-logo.png"
-          alt="App Logo"
-          class="app-logo__image"
+  <header class="app-header">
+    <div class="app-header__top">
+      <div class="app-header__left">
+        <div class="app-logo">
+          <img
+            src="../../assets/images/app-logo.png"
+            alt="App Logo"
+            class="app-logo__image"
+          />
+          <span class="app-logo__title">Weather App</span>
+        </div>
+        <CustomInput
+          v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
+          v-model:inputValue="searchQuery"
+          :selectMode="true"
+          :options="arr"
+          :selectedItem="selectedCity"
+          @update:inputValue="searchCity"
+          @update:selectedItem="selectCity"
         />
-        <span class="app-logo__title">Weather App</span>
-      </div>
-      <CustomInput
-        v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
-        v-model:inputValue="searchQuery"
-        :selectMode="true"
-        :options="arr"
-        :selectedItem="selectedCity"
-        @update:inputValue="searchCity"
-        @update:selectedItem="selectCity"
-      />
 
-      <CustomBtn>
-        <template #label> Додати місто </template>
-      </CustomBtn>
-      <CustomDropdown
-        v-model="selected"
-        :options="['UK', 'EN', 'DE']"
-        width="70px"
-      />
-      <CustomSwitch v-model="themeStore.isDark" @update:modelValue="themeStore.toggleTheme" keepColor>
-        <template #label-left>
-          <CustomIcon name="sun" />
-        </template>
-        <template #label-right>
-          <CustomIcon name="moon" />
-        </template>
-      </CustomSwitch>
+        <CustomBtn>
+          <template #label> Додати місто </template>
+        </CustomBtn>
+      </div>
+      <div class="app-header__right">
+        <CustomDropdown
+          v-model="selected"
+          :options="['UK', 'EN', 'DE']"
+          width="70px"
+        />
+        <CustomSwitch
+          :modelValue="themeStore.isDark"
+          @change="themeStore.toggleTheme"
+          keepColor
+        >
+          <template #label-left>
+            <CustomIcon name="sun" />
+          </template>
+          <template #label-right>
+            <CustomIcon name="moon" />
+          </template>
+        </CustomSwitch>
+      </div>
     </div>
+    <CustomDivider />
+    <div class="app-header__bottom"></div>
   </header>
 </template>
 
@@ -49,6 +60,7 @@ import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomIcon from "../UI/CustomIcon.vue";
+import CustomDivider from "../UI/CustomDivider.vue";
 
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -66,24 +78,37 @@ const selectedCity = ref("");
 function selectCity(val: string | number | null) {
   selectedCity.value = val as string;
 }
-const gender = ref(false);
 </script>
 
 <style scoped lang="scss">
 .app-header {
   background-color: var(--content-bg);
-  height: 60px;
+  // height: 60px;
+  padding: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   border-radius: 0 0 10px 10px;
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
 }
+.app-header__top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
 .app-header__left {
   display: flex;
   align-items: center;
   flex: 1;
+  gap: 24px;
+}
+.app-header__right {
+  display: flex;
+  align-items: center;
   gap: 24px;
 }
 .app-logo {
