@@ -27,8 +27,8 @@
       </div>
       <div class="app-header__right">
         <CustomDropdown
-          v-model="selected"
-          :options="['UK', 'EN', 'DE']"
+          v-model="locale"
+          :options="availableLocales"
           width="70px"
         />
         <CustomSwitch
@@ -45,8 +45,10 @@
         </CustomSwitch>
       </div>
     </div>
-    <CustomDivider />
-    <div class="app-header__bottom"></div>
+    <CustomDivider class="app-header__divider"/>
+    <div class="app-header__bottom">
+      <Navbar/>
+    </div>
   </header>
 </template>
 
@@ -55,18 +57,26 @@ import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomIcon from "../UI/CustomIcon.vue";
 import CustomDivider from "../UI/CustomDivider.vue";
+import Navbar from "./Navbar.vue";
+
+import { useI18n } from 'vue-i18n'
+
+const { locale, availableLocales } = useI18n()
 
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
 const selected = ref<string | number>("");
+
+
+
 function searchCity(val: string) {
   if (val) {
     arr.value.push("1");
@@ -130,5 +140,9 @@ function selectCity(val: string | number | null) {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+}
+.app-header__divider {
+  width: 100%;
+  margin: 16px 0;
 }
 </style>
