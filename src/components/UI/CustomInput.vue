@@ -14,11 +14,11 @@
         type="text"
         class="input-bar"
       />
-     <div v-if="props.selectMode && props.selectedItem" class="input-selected-content">
+     <div v-if="props.selectMode && selectedItem" class="input-selected-content">
         {{ selectedItem }}
       </div>
       <button
-        v-if="props.inputValue || props.selectedItem"
+        v-if="props.inputValue || selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -50,7 +50,6 @@ import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
 interface Props {
   inputValue: string;
   selectMode?: boolean;
-  selectedItem?: string | number;
   options?: (string | number)[];
   label?: string;
   error?: string;
@@ -64,16 +63,17 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   width: '300',
 });
+const selectedItem = ref<string | number | null>(null);
 const emit = defineEmits<{
-  "update:inputValue": [value: string];          
-  "update:selectedItem": [value: string | number];
+  "update:inputValue": [value: string];     
+  "select": [value: string | number]; 
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const isFocused = ref(false);
 const isInputDisabled = computed(() => {
-  return props.disabled || (props.selectMode && !!props.selectedItem);
+  return props.disabled || (props.selectMode && !!selectedItem.value);
 });
 
 const onInput = (e: Event) => {
@@ -88,8 +88,9 @@ const onFocus = () => {
 };
 
 function selectItem(val: string | number) {
-  emit("update:selectedItem", val);
+  selectedItem.value = val;
   emit("update:inputValue", "");
+  emit("select", val);
   isOpen.value = false;
 }
 
@@ -102,8 +103,9 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 function clearInput() {
-  if (props.selectedItem) {
-    emit("update:selectedItem", "");
+  if (selectedItem.value) {
+    selectedItem.value = null;
+     emit("select", "");
   } else {
     emit("update:inputValue", "");
   }

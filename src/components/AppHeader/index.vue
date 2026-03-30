@@ -16,9 +16,8 @@
           v-model:inputValue="searchQuery"
           :selectMode="true"
           :options="arr"
-          :selectedItem="selectedCity"
           @update:inputValue="searchCity"
-          @update:selectedItem="selectCity"
+          @select="selectCity"
         />
 
         <CustomBtn>
@@ -79,7 +78,7 @@ const arr = ref<string[]>([]);
 
 function searchCity(val: string) {
   if (val) {
-    arr.value.push("1");
+    arr.value.push(val);
   } else {
     arr.value = [];
   }
