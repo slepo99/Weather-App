@@ -32,8 +32,8 @@
           width="70px"
         />
         <CustomSwitch
-          :modelValue="themeStore.isDark"
-          @change="themeStore.toggleTheme"
+          :isActive="themeStore.isDark"
+          @update="themeStore.toggleTheme"
           keepColor
         >
           <template #label-left>
