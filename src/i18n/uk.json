@@ -2,5 +2,10 @@
   "nav": {
     "home": "Головна",
     "favorites": "Обране"
+  },
+  "weatherCard": {
+    "wind": "Вітер",
+    "humidity": "Вологість",
+    "pressure": "Тиск"
   }
 }

@@ -57,7 +57,7 @@ import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
@@ -73,7 +73,7 @@ const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
-const selected = ref<string | number>("");
+
 
 
 
@@ -102,6 +102,7 @@ function selectCity(val: string | number | null) {
   border-radius: 0 0 10px 10px;
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
+  
 }
 .app-header__top {
   display: flex;
@@ -132,7 +133,7 @@ function selectCity(val: string | number | null) {
   height: 40px;
 }
 .app-logo__title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -143,6 +144,9 @@ function selectCity(val: string | number | null) {
 }
 .app-header__divider {
   width: 100%;
-  margin: 16px 0;
+  margin: 12px 0;
+}
+.app-header__bottom {
+  width: 100%;
 }
 </style>

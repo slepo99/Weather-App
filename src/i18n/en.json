@@ -2,5 +2,10 @@
   "nav": {
     "home": "Home",
     "favorites": "Favorites"
+  },
+  "weatherCard": {
+    "wind": "Wind",
+    "humidity": "Humidity",
+    "pressure": "Pressure"
   }
 }
