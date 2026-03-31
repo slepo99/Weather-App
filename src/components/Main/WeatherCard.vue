@@ -25,8 +25,8 @@
             <span>{{ t("weatherCard.wind") }} </span>
             <CustomIcon
               class="weather-card__icon"
-              :name="themeStore.isDark ? 'wind-light' : 'wind-dark'"
-              size="50px"
+              name="wind-light"
+              size="30px"
               alt="weather icon"
             />
           </div>
@@ -37,8 +37,8 @@
             <span>{{ t("weatherCard.humidity") }}</span>
             <CustomIcon
               class="weather-card__icon"
-              :name="themeStore.isDark ? 'humidity-light' : 'humidity-dark'"
-              size="50px"
+              name="humidity-light"
+              size="30px"
               alt="weather icon"
             />
           </div>
@@ -49,8 +49,8 @@
             <span>{{ t("weatherCard.pressure") }}</span>
             <CustomIcon
               class="weather-card__icon"
-              :name="themeStore.isDark ? 'pressure-light' : 'pressure-dark'"
-              size="50px"
+              name="pressure-light"
+              size="30px"
               alt="weather icon"
             />
           </div>
@@ -61,15 +61,16 @@
 
     <CustomDivider />
     <div class="weather-card__chart">
-      <canvas class="weather-card__canvas"></canvas>
+      <TemperatureChart
+        :labels="['12:00', '13:00', '14:00', '15:00', '16:00']"
+        :data="[18, 20, 22, 24, 5]"
+      />
       <div class="weather-card__controls">
         <button class="weather-card__toggle">Час/День</button>
         <button class="weather-card__remove">✕</button>
         <CustomBtn>
           <template #icon>
-            <CustomIcon
-              :name="themeStore.isDark ? 'delete-light' : 'delete-dark'"
-            />
+            <CustomIcon name="delete-light" />
           </template>
         </CustomBtn>
       </div>
@@ -85,6 +86,7 @@ import { useThemeStore } from "@/stores/theme";
 import { useI18n } from "vue-i18n";
 import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
+import TemperatureChart from "./TemperatureChart.vue";
 
 const { t } = useI18n();
 const themeStore = useThemeStore();
@@ -151,5 +153,8 @@ const handleToggleFavorite = () => {
     align-items: center;
     gap: 8px;
   }
+}
+.weather-card__chart {
+  width: 100%;
 }
 </style>

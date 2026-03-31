@@ -15,8 +15,8 @@ import WeatherCard from "@/components/Main/WeatherCard.vue";
   margin-top: 24px;
 }
 .cards-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
+ display: flex;
+ flex-direction: column;
+ gap: 16px;
 }
 </style>

@@ -2,50 +2,57 @@
   <div class="custom-icon" :style="containerStyle">
     <img
       v-if="isRemote"
-      :src="remoteUrl"
+      :src="props.name"
       :alt="props.name"
       :style="imageStyle"
       class="icon-image"
     />
-    <img
-      v-else-if="isLocal && localUrl"
-      :src="localUrl"
-      :alt="props.name"
-      :style="imageStyle"
-      class="icon-image"
+
+    <component
+      v-else-if="IconComponent"
+      :is="IconComponent"
+      :style="svgStyle"
+      class="icon-svg"
     />
+
+    <span v-else class="icon-fallback">?</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, defineAsyncComponent } from "vue";
 
 const props = withDefaults(
   defineProps<{
     name: string;
     size?: string | number;
     backgroundColor?: string;
+    color?: string;
   }>(),
   {
     size: 24,
     backgroundColor: "transparent",
+    color: "var(--icon)",
   },
 );
 
-const isRemote = computed(() => {
-  return props.name.startsWith("http://") || props.name.startsWith("https://");
-});
-const remoteUrl = computed(() => (isRemote.value ? props.name : ""));
-const isLocal = computed(() => !isRemote.value && !!props.name);
+const isRemote = computed(
+  () => props.name.startsWith("http://") || props.name.startsWith("https://"),
+);
 
-const localUrl = computed(() => {
-  if (!isLocal.value) return "";
-  try {
-    return new URL(`/src/assets/icons/${props.name}.svg`, import.meta.url).href;
-  } catch (err) {
-    console.warn(`[AppIcon] Local icon not found: ${props.name}.svg`);
-    return "";
-  }
+const IconComponent = computed(() => {
+  if (isRemote.value || !props.name) return null;
+
+  return defineAsyncComponent(() =>
+    import(`../../assets/icons/${props.name}.svg`).catch((err) => {
+      console.warn(`[CustomIcon] Icon not found: ${props.name}.svg`, err);
+      return { render: () => null };
+    }),
+  );
+});
+
+const getSize = computed(() => {
+  return typeof props.size === "number" ? `${props.size}px` : props.size;
 });
 
 const containerStyle = computed(() => ({
@@ -55,25 +62,28 @@ const containerStyle = computed(() => ({
   width: getSize.value,
   height: getSize.value,
   backgroundColor: props.backgroundColor,
+  borderRadius: "50%",
 }));
+
 const imageStyle = computed(() => ({
   width: getSize.value,
   height: getSize.value,
   objectFit: "contain" as const,
 }));
 
-const getSize = computed(() => {
-  if (typeof props.size === "number") return `${props.size}px`;
-  return props.size || "20px";
-});
+const svgStyle = computed(() => ({
+  width: getSize.value,
+  height: getSize.value,
+  fill: props.color,
+}));
 </script>
 
 <style scoped>
 .custom-icon {
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   line-height: 0;
+}
+
+.icon-svg {
+  display: block;
 }
 </style>
