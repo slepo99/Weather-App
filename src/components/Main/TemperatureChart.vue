@@ -40,7 +40,7 @@ function createOrUpdateChart() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: true, position: "top" as const },
+        legend: { display: false, position: "top" as const },
         tooltip: {
           mode: "index",
           intersect: false,
@@ -49,11 +49,11 @@ function createOrUpdateChart() {
       scales: {
         y: {
           beginAtZero: false,
-          grid: { color: "#e5e7eb" },
+          grid: {display: false},
           ticks: { callback: (val) => `${val}°` },
         },
         x: {
-          grid: { color: "#f3f4f6" },
+          grid: {display: false},
         },
       },
     },
