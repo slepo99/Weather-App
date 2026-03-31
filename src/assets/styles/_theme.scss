@@ -1,11 +1,14 @@
 :root.light {
   --app-bg: #e7e8ec;
-  --content-bg: #edeef1;
+  // --content-bg: #edeef1;
+  --content-bg: #e6e6e6;
   --text: #111;
+  --btn-bg: #6778da;
 }
 
 :root.dark {
 --app-bg: #1e232f;
   --content-bg: #2e3548;
   --text: #fff;
+    --btn-bg: #6778da;
 }

@@ -12,13 +12,14 @@ body {
   margin: 0;
   background: var(--app-bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+   font-family: 'Inter', sans-serif;
+
 }
 
 .container {
   max-width: $container-max-width;
   margin: 0 auto;
-  padding: 16px;
+  padding: 0 16px;
   width: 100%;
 }
 .layout {
@@ -29,3 +30,4 @@ body {
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
+

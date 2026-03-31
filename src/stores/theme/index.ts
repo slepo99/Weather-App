@@ -10,11 +10,12 @@ export const useThemeStore = defineStore('theme', {
   state: (): ThemeState => ({
     theme: THEME.DARK,
   }),
-
+  getters: {
+    isDark: (state) => state.theme === THEME.DARK,
+  },
   actions: {
     initTheme() {
       const saved = localStorage.getItem('theme') as Theme | null;
-
       if (saved) {
         this.theme = saved;
       } else {

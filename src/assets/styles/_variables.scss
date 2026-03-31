@@ -1,4 +1,8 @@
 $theme-dark: #1e90ff;
 $theme-light: #f3eae9;
 $container-max-width: 1200px;
-$content-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+$block-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+$content-shadow:
+  0 0 0 1px rgba(59, 130, 246, 0.8),
+  0 0 10px rgba(59, 130, 246, 0.6),
+  0 0 20px rgba(59, 130, 246, 0.4);
