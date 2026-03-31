@@ -13,7 +13,7 @@
         <CustomIcon
           class="weather-card__icon"
           name="https://openweathermap.org/img/wn/10d@4x.png"
-          size="150px"
+          size="100px"
           alt="weather icon"
         />
         <span class="weather-card__temp">18°C</span>
@@ -26,7 +26,7 @@
             <CustomIcon
               class="weather-card__icon"
               name="wind-light"
-              size="30px"
+              size="24px"
               alt="weather icon"
             />
           </div>
@@ -38,7 +38,7 @@
             <CustomIcon
               class="weather-card__icon"
               name="humidity-light"
-              size="30px"
+              size="24px"
               alt="weather icon"
             />
           </div>
@@ -50,7 +50,7 @@
             <CustomIcon
               class="weather-card__icon"
               name="pressure-light"
-              size="30px"
+              size="24px"
               alt="weather icon"
             />
           </div>
@@ -62,37 +62,85 @@
     <CustomDivider />
     <div class="weather-card__chart">
       <TemperatureChart
-        :labels="['12:00', '13:00', '14:00', '15:00', '16:00']"
-        :data="[18, 20, 22, 24, 5]"
+        :labels="
+          isChartByDays
+            ? props.weather.chart.hourly.labels
+            : props.weather.chart.daily.labels
+        "
+        :data="
+          isChartByDays
+            ? props.weather.chart.hourly.data
+            : props.weather.chart.daily.data
+        "
       />
-      <div class="weather-card__controls">
-        <button class="weather-card__toggle">Час/День</button>
-        <button class="weather-card__remove">✕</button>
-        <CustomBtn>
-          <template #icon>
-            <CustomIcon name="delete-light" />
-          </template>
-        </CustomBtn>
-      </div>
+    </div>
+    <CustomDivider />
+    <div class="weather-card__controls">
+      <CustomSwitch
+        :isActive="isChartByDays"
+        @update="updateChartMode"
+        keepColor
+      >
+        <template #label-left>
+          <span>{{ t("weatherCard.chart.mode.hour") }}</span>
+        </template>
+        <template #label-right>
+          <span>{{ t("weatherCard.chart.mode.day") }}</span>
+        </template>
+      </CustomSwitch>
+      <CustomBtn>
+        <template #icon>
+          <CustomIcon name="delete-light" />
+        </template>
+      </CustomBtn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+import { ref } from "vue";
 import CustomDivider from "../UI/CustomDivider.vue";
 import CustomFavoriteToggle from "../UI/CustomFavoriteToggle.vue";
 import CustomIcon from "../UI/CustomIcon.vue";
-import { useThemeStore } from "@/stores/theme";
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import TemperatureChart from "./TemperatureChart.vue";
+import CustomSwitch from "../UI/CustomSwitch.vue";
+
+const props = defineProps<{
+  weather: {
+    city: string;
+    temperature: number;
+    icon: string;
+    wind: number;
+    humidity: number;
+    pressure: number;
+
+    chart: {
+      hourly: {
+        labels: string[];
+        data: number[];
+      };
+      daily: {
+        labels: string[];
+        data: number[];
+      };
+    };
+  };
+
+  isFavorite: boolean;
+}>();
+const isChartByDays = ref(false);
 
 const { t } = useI18n();
-const themeStore = useThemeStore();
 const isFavorite = ref(false);
 const handleToggleFavorite = () => {
   isFavorite.value = !isFavorite.value;
+};
+function updateChartMode (val: boolean) {
+ 
+  isChartByDays.value = val;
+  console.log("Chart mode updated. By hour:", val);
 };
 </script>
 
@@ -113,7 +161,6 @@ const handleToggleFavorite = () => {
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
 }
 .weather-card__info {
   display: flex;
@@ -134,15 +181,14 @@ const handleToggleFavorite = () => {
 }
 .weather-card__temp {
   font-size: 32px;
-  font-weight: 500;
+  font-weight: 700;
 }
 .weather-card__details {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 28px;
+  font-size: 18px;
   width: 100%;
-  padding: 16px;
 }
 .weather-card__detail {
   display: flex;
@@ -156,5 +202,12 @@ const handleToggleFavorite = () => {
 }
 .weather-card__chart {
   width: 100%;
+}
+.weather-card__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
 }
 </style>

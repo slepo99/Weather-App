@@ -1,7 +1,7 @@
 // src/layouts/DefaultLayout.vue
 <template>
 <div class="layout">
-  <header>
+  <header class="app-header">
     <div class="container">
       <AppHeader />
     </div>

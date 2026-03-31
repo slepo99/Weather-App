@@ -6,6 +6,12 @@
   "weatherCard": {
     "wind": "Вітер",
     "humidity": "Вологість",
-    "pressure": "Тиск"
+    "pressure": "Тиск",
+    "chart": {
+      "mode": {
+        "hour": "Години",
+        "day": "5 Днів"
+      }
+    }
   }
 }

@@ -19,7 +19,9 @@ let chartInstance: Chart | null = null;
 
 function createOrUpdateChart() {
   if (!canvasRef.value) return;
-
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
   chartInstance = new Chart(canvasRef.value, {
     type: "bar",
     data: {
@@ -33,6 +35,7 @@ function createOrUpdateChart() {
           borderWidth: 2,
           borderRadius: 6,
           barThickness: 8,
+          minBarLength: 4,  
         },
       ],
     },

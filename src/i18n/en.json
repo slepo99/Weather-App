@@ -6,6 +6,12 @@
   "weatherCard": {
     "wind": "Wind",
     "humidity": "Humidity",
-    "pressure": "Pressure"
+    "pressure": "Pressure",
+    "chart": {
+      "mode": {
+        "hour": "Hours",
+        "day": "5 Days"
+      }
+    }
   }
 }
