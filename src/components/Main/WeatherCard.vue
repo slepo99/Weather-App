@@ -1,39 +1,93 @@
 <template>
   <div class="card-wrapper">
-     <div class="weather-card__header">
+    <div class="weather-card__header">
       <span class="weather-card__city">London</span>
-      <CustomFavoriteToggle :isFavorite="isFavorite" @toggleFavorite="handleToggleFavorite()" />
+      <CustomFavoriteToggle
+        :isFavorite="isFavorite"
+        @toggleFavorite="handleToggleFavorite()"
+      />
     </div>
-    <CustomDivider/>
-     <div class="weather-card__current">
-      <CustomIcon class="weather-card__icon" name="https://openweathermap.org/img/wn/10d@4x.png" size="150px" alt="weather icon" />
-      <span class="weather-card__temp">18°C</span>
+    <CustomDivider />
+    <div class="weather-card__info">
+      <div class="weather-card__current">
+        <CustomIcon
+          class="weather-card__icon"
+          name="https://openweathermap.org/img/wn/10d@4x.png"
+          size="150px"
+          alt="weather icon"
+        />
+        <span class="weather-card__temp">18°C</span>
+      </div>
+      <CustomDivider vertical />
+      <div class="weather-card__details">
+        <div class="weather-card__detail">
+          <div>
+            <span>{{ t("weatherCard.wind") }} </span>
+            <CustomIcon
+              class="weather-card__icon"
+              :name="themeStore.isDark ? 'wind-light' : 'wind-dark'"
+              size="50px"
+              alt="weather icon"
+            />
+          </div>
+          <span>5 м/с</span>
+        </div>
+        <div class="weather-card__detail">
+          <div>
+            <span>{{ t("weatherCard.humidity") }}</span>
+            <CustomIcon
+              class="weather-card__icon"
+              :name="themeStore.isDark ? 'humidity-light' : 'humidity-dark'"
+              size="50px"
+              alt="weather icon"
+            />
+          </div>
+          <span>60%</span>
+        </div>
+        <div class="weather-card__detail">
+          <div>
+            <span>{{ t("weatherCard.pressure") }}</span>
+            <CustomIcon
+              class="weather-card__icon"
+              :name="themeStore.isDark ? 'pressure-light' : 'pressure-dark'"
+              size="50px"
+              alt="weather icon"
+            />
+          </div>
+          <span>1012 гПа</span>
+        </div>
+      </div>
     </div>
-        <CustomDivider/>
-    <div class="weather-card__details">
-      <div class="weather-card__detail">{{ t('weatherCard.wind') }}: 5 м/с</div>
-      <div class="weather-card__detail">{{ t('weatherCard.humidity') }}: 60%</div>
-      <div class="weather-card__detail">{{ t('weatherCard.pressure') }}: 1012 гПа</div>
-    </div>
-        <CustomDivider/>
-    <div class="weather-card__chart">
 
+    <CustomDivider />
+    <div class="weather-card__chart">
       <canvas class="weather-card__canvas"></canvas>
       <div class="weather-card__controls">
         <button class="weather-card__toggle">Час/День</button>
         <button class="weather-card__remove">✕</button>
+        <CustomBtn>
+          <template #icon>
+            <CustomIcon
+              :name="themeStore.isDark ? 'delete-light' : 'delete-dark'"
+            />
+          </template>
+        </CustomBtn>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import CustomDivider from '../UI/CustomDivider.vue';
-import CustomFavoriteToggle from '../UI/CustomFavoriteToggle.vue';
-import CustomIcon from '../UI/CustomIcon.vue';
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue';
-const { t } = useI18n()
+import CustomDivider from "../UI/CustomDivider.vue";
+import CustomFavoriteToggle from "../UI/CustomFavoriteToggle.vue";
+import CustomIcon from "../UI/CustomIcon.vue";
+import { useThemeStore } from "@/stores/theme";
+import { useI18n } from "vue-i18n";
+import { ref } from "vue";
+import CustomBtn from "../UI/CustomBtn.vue";
+
+const { t } = useI18n();
+const themeStore = useThemeStore();
 const isFavorite = ref(false);
 const handleToggleFavorite = () => {
   isFavorite.value = !isFavorite.value;
@@ -53,30 +107,49 @@ const handleToggleFavorite = () => {
   box-shadow: $block-shadow;
 }
 .weather-card__header {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+.weather-card__info {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
 }
 .weather-card__city {
-    display: flex;
-    width: 100%;
-    font-size: 32px;
-    font-weight: 700;
+  display: flex;
+  width: 100%;
+  font-size: 32px;
+  font-weight: 700;
 }
 .weather-card__current {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 .weather-card__temp {
-    font-size: 32px;
-    font-weight: 500;
+  font-size: 32px;
+  font-weight: 500;
 }
 .weather-card__details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 28px;
+  width: 100%;
+  padding: 16px;
+}
+.weather-card__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  div {
     display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    width: 100%;
+    align-items: center;
+    gap: 8px;
+  }
 }
 </style>

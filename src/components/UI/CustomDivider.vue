@@ -20,7 +20,7 @@ const dividerStyles = computed(() => {
   return {
     backgroundColor: props.color,
     width: props.vertical ? props.width : "100%",
-    height: props.vertical ? "100%" : props.width,
+    height: props.vertical ? "unset" : props.width,
   };
 });
 </script>

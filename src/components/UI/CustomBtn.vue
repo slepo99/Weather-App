@@ -1,7 +1,7 @@
 <template>
   <button @click="handleClick" :disabled="props.disabled" class="custom-btn">
     <slot name="icon"> </slot>
-    <div class="btn-label-wrapper">
+    <div v-if="$slots.label" class="btn-label-wrapper">
       <span class="text-default btn-label">
         <slot name="label"> </slot>
       </span>
