@@ -14,11 +14,11 @@
         type="text"
         class="input-bar"
       />
-     <div v-if="props.selectMode && selectedItem" class="input-selected-content">
+     <div v-if="props.selectMode && props.selectedItem" class="input-selected-content">
         {{ selectedItem }}
       </div>
       <button
-        v-if="props.inputValue || selectedItem"
+        v-if="props.inputValue || props.selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -50,6 +50,7 @@ import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
 interface Props {
   inputValue: string;
   selectMode?: boolean;
+  selectedItem?: string | number;
   options?: (string | number)[];
   label?: string;
   error?: string;
@@ -63,17 +64,16 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   width: '300',
 });
-const selectedItem = ref<string | number | null>(null);
 const emit = defineEmits<{
-  "update:inputValue": [value: string];     
-  "select": [value: string | number]; 
+  "update:inputValue": [value: string];          
+  "select": [value: string | number];
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const isFocused = ref(false);
 const isInputDisabled = computed(() => {
-  return props.disabled || (props.selectMode && !!selectedItem.value);
+  return props.disabled || (props.selectMode && !!props.selectedItem);
 });
 
 const onInput = (e: Event) => {
@@ -88,9 +88,8 @@ const onFocus = () => {
 };
 
 function selectItem(val: string | number) {
-  selectedItem.value = val;
-  emit("update:inputValue", "");
   emit("select", val);
+  emit("update:inputValue", "");
   isOpen.value = false;
 }
 
@@ -103,9 +102,8 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 function clearInput() {
-  if (selectedItem.value) {
-    selectedItem.value = null;
-     emit("select", "");
+  if (props.selectedItem) {
+    emit("select", "");
   } else {
     emit("update:inputValue", "");
   }

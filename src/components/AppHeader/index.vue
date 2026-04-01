@@ -11,18 +11,21 @@
           />
           <span class="app-logo__title">Weather App</span>
         </div>
-        <CustomInput
-          v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
-          v-model:inputValue="searchQuery"
-          :selectMode="true"
-          :options="arr"
-          @update:inputValue="searchCity"
-          @select="selectCity"
-        />
+        <div v-if="!isTablet" class="app-header__search">
+          <CustomInput
+            v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
+            v-model:inputValue="searchQuery"
+            selectMode
+            :options="arr"
+            :selectedItem="selectedCity"
+            @update:inputValue="searchCity"
+            @select="selectCity"
+          />
 
-        <CustomBtn>
-          <template #label> Додати місто </template>
-        </CustomBtn>
+          <CustomBtn>
+            <template #label> Додати місто </template>
+          </CustomBtn>
+        </div>
       </div>
       <div class="app-header__right">
         <CustomDropdown
@@ -44,9 +47,24 @@
         </CustomSwitch>
       </div>
     </div>
-    <CustomDivider class="app-header__divider"/>
+    <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <Navbar/>
+      <div v-if="isTablet" class="app-header__search" id="search-mobile">
+        <CustomInput
+          v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
+          v-model:inputValue="searchQuery"
+          selectMode
+          :options="arr"
+          :selectedItem="selectedCity"
+          @update:inputValue="searchCity"
+          @select="selectCity"
+        />
+
+        <CustomBtn>
+          <template #label> Додати місто </template>
+        </CustomBtn>
+      </div>
+      <Navbar />
     </div>
   </header>
 </template>
@@ -63,18 +81,16 @@ import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomIcon from "../UI/CustomIcon.vue";
 import CustomDivider from "../UI/CustomDivider.vue";
 import Navbar from "./Navbar.vue";
+import { useResponsive } from "@/composables/useResponsive";
 
-import { useI18n } from 'vue-i18n'
-
-const { locale, availableLocales } = useI18n()
+import { useI18n } from "vue-i18n";
+const { isTablet } = useResponsive();
+const { locale, availableLocales } = useI18n();
 
 const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
-
-
-
 
 function searchCity(val: string) {
   if (val) {
@@ -101,7 +117,9 @@ function selectCity(val: string | number | null) {
   border-radius: 0 0 10px 10px;
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
-  
+  @media (max-width: 900px) {
+    padding: 12px;
+  }
 }
 .app-header__top {
   display: flex;
@@ -109,12 +127,27 @@ function selectCity(val: string | number | null) {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 16px;
+  // @media (max-width: 1024px) {
+  //   align-items: flex-start;
+  // }
+}
+.app-header__search {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
 }
 .app-header__left {
   display: flex;
   align-items: center;
   flex: 1;
   gap: 24px;
+  // @media (max-width: 1024px) {
+  //   flex-direction: column;
+  //   align-items: unset;
+  //   gap: 12px;
+  // }
 }
 .app-header__right {
   display: flex;
@@ -124,7 +157,7 @@ function selectCity(val: string | number | null) {
 .app-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
 }
 .app-logo__image {
@@ -147,5 +180,11 @@ function selectCity(val: string | number | null) {
 }
 .app-header__bottom {
   width: 100%;
+   @media (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+    align-items: unset;
+    gap: 12px;
+  }
 }
 </style>

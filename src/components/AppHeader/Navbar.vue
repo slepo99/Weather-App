@@ -24,7 +24,7 @@ const navRoutes = router.options.routes.filter(
 );
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .app-header__nav {
   display: flex;
   gap: 12px;
@@ -47,6 +47,10 @@ const navRoutes = router.options.routes.filter(
   font-weight: 500;
   transition: all 300ms ease;
   position: relative;
+  @media (max-width: 900px) {
+    font-size: 18px;
+    padding: 4px 8px;
+  }
 }
 .nav-item:hover {
   color: color-mix(in srgb, var(--btn-bg) 90%, black);
