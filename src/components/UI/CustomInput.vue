@@ -2,7 +2,7 @@
   <div
     class="input-container"
     ref="containerRef"
-    :style="`max-width: ${props.width}px`"
+    :style="`width: ${props.width}`"
   >
     <div class="input-wrapper">
       <input
@@ -62,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectMode: false,
   options: () => [],
   disabled: false,
-  width: '300',
+  width: '100%',
 });
 const emit = defineEmits<{
   "update:inputValue": [value: string];          

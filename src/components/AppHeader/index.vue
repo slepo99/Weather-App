@@ -11,15 +11,18 @@
           />
           <span class="app-logo__title">Weather App</span>
         </div>
-        <div v-if="!isTablet" class="app-header__search">
+        <div
+          v-if="!isTablet && router.currentRoute.value.fullPath === ROUTES.HOME"
+          class="app-header__search"
+        >
           <CustomInput
-            v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
             v-model:inputValue="searchQuery"
             selectMode
             :options="arr"
             :selectedItem="selectedCity"
             @update:inputValue="searchCity"
             @select="selectCity"
+            class="app-header__search-input"
           />
 
           <CustomBtn>
@@ -49,15 +52,15 @@
     </div>
     <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <div v-if="isTablet" class="app-header__search" id="search-mobile">
+      <div v-if="isTablet && router.currentRoute.value.fullPath === ROUTES.HOME" class="app-header__search" id="search-mobile">
         <CustomInput
-          v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
           v-model:inputValue="searchQuery"
           selectMode
           :options="arr"
           :selectedItem="selectedCity"
           @update:inputValue="searchCity"
           @select="selectCity"
+          class="app-header__search-input"
         />
 
         <CustomBtn>
@@ -138,6 +141,12 @@ function selectCity(val: string | number | null) {
   gap: 16px;
   flex: 1;
 }
+.app-header__search-input {
+  max-width: 300px;
+   @media (max-width: 600px) {
+    max-width: 100%;
+  }
+}
 .app-header__left {
   display: flex;
   align-items: center;
@@ -163,11 +172,18 @@ function selectCity(val: string | number | null) {
 .app-logo__image {
   width: 40px;
   height: 40px;
+    @media (max-width: 600px) {
+     width: 34px;
+      height: 34px;
+  }
 }
 .app-logo__title {
   font-size: 32px;
   font-weight: 700;
   white-space: nowrap;
+  @media (max-width: 600px) {
+    font-size: 24px;
+  }
 }
 .custom-btn:disabled {
   opacity: 0.5;
@@ -180,7 +196,7 @@ function selectCity(val: string | number | null) {
 }
 .app-header__bottom {
   width: 100%;
-   @media (max-width: 900px) {
+  @media (max-width: 900px) {
     display: flex;
     flex-direction: column;
     align-items: unset;
