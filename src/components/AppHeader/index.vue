@@ -42,10 +42,10 @@
           keepColor
         >
           <template #label-left>
-            <CustomIcon name="sun" />
+            <CustomIcon name="sun" size="24px" />
           </template>
           <template #label-right>
-            <CustomIcon name="moon" />
+            <CustomIcon name="moon" size="24px" />
           </template>
         </CustomSwitch>
       </div>
@@ -112,7 +112,7 @@ function selectCity(val: string | number | null) {
 .app-header {
   background-color: var(--content-bg);
   // height: 60px;
-  padding: 16px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -121,7 +121,7 @@ function selectCity(val: string | number | null) {
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
   @media (max-width: 900px) {
-    padding: 12px;
+    padding: 16px;
   }
 }
 .app-header__top {

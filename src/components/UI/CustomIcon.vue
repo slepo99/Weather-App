@@ -1,5 +1,6 @@
 <template>
-  <div class="custom-icon" :style="containerStyle">
+ <div>
+   <div class="custom-icon" :style="containerStyle">
     <img
       v-if="isRemote"
       :src="props.name"
@@ -17,6 +18,7 @@
 
     <span v-else class="icon-fallback">?</span>
   </div>
+ </div>
 </template>
 
 <script setup lang="ts">
@@ -30,7 +32,6 @@ const props = withDefaults(
     color?: string;
   }>(),
   {
-    size: 24,
     backgroundColor: "transparent",
     color: "var(--icon)",
   },
@@ -52,6 +53,7 @@ const IconComponent = computed(() => {
 });
 
 const getSize = computed(() => {
+  if (props.size === undefined || props.size === null || props.size === "") return "100%";
   return typeof props.size === "number" ? `${props.size}px` : props.size;
 });
 

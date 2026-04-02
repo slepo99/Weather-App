@@ -11,9 +11,8 @@
     <div class="weather-card__info">
       <div class="weather-card__current">
         <CustomIcon
-          class="weather-card__icon"
+          class="weather-card__icon-current"
           name="https://openweathermap.org/img/wn/10d@4x.png"
-          size="100px"
           alt="weather icon"
         />
         <span class="weather-card__temp">18°C</span>
@@ -26,7 +25,6 @@
             <CustomIcon
               class="weather-card__icon"
               name="wind-light"
-              size="24px"
               alt="weather icon"
             />
           </div>
@@ -38,7 +36,6 @@
             <CustomIcon
               class="weather-card__icon"
               name="humidity-light"
-              size="24px"
               alt="weather icon"
             />
           </div>
@@ -50,7 +47,6 @@
             <CustomIcon
               class="weather-card__icon"
               name="pressure-light"
-              size="24px"
               alt="weather icon"
             />
           </div>
@@ -82,15 +78,15 @@
         keepColor
       >
         <template #label-left>
-          <span>{{ t("weatherCard.chart.mode.hour") }}</span>
+          <span class="weather-card__chart-weitch-label">{{ t("weatherCard.chart.mode.hour") }}</span>
         </template>
         <template #label-right>
-          <span>{{ t("weatherCard.chart.mode.day") }}</span>
+          <span class="weather-card__chart-weitch-label">{{ t("weatherCard.chart.mode.day") }}</span>
         </template>
       </CustomSwitch>
       <CustomBtn>
         <template #icon>
-          <CustomIcon name="delete-light" />
+          <CustomIcon name="delete-light" size="24px"/>
         </template>
       </CustomBtn>
     </div>
@@ -137,11 +133,10 @@ const isFavorite = ref(false);
 const handleToggleFavorite = () => {
   isFavorite.value = !isFavorite.value;
 };
-function updateChartMode (val: boolean) {
- 
+function updateChartMode(val: boolean) {
   isChartByDays.value = val;
   console.log("Chart mode updated. By hour:", val);
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -151,10 +146,13 @@ function updateChartMode (val: boolean) {
   align-items: flex-start;
   justify-content: space-between;
   background-color: var(--content-bg);
-  padding: 16px;
+  padding: 24px;
   border-radius: 10px;
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
+  @media (max-width: 900px) {
+    padding: 16px;
+  }
 }
 .weather-card__header {
   display: flex;
@@ -167,28 +165,52 @@ function updateChartMode (val: boolean) {
   flex-direction: row;
   gap: 16px;
   width: 100%;
+  @media (max-width: 600px) {
+    gap: 10px;
+  }
 }
 .weather-card__city {
   display: flex;
   width: 100%;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
+  @media (max-width: 600px) {
+    font-size: 18px;
+  }
 }
 .weather-card__current {
   display: flex;
   align-items: center;
   gap: 16px;
+  @media (max-width: 600px) {
+    gap: 8px;
+  }
+}
+.weather-card__icon-current {
+  width: 100px;
+  height: 100px;
+  @media (max-width: 600px) {
+    width: 50px;
+    height: 50px;
+  }
 }
 .weather-card__temp {
   font-size: 32px;
   font-weight: 700;
+  @media (max-width: 600px) {
+    font-size: 20px;
+  }
 }
 .weather-card__details {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 18px;
+  gap: 6px;
   width: 100%;
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
 }
 .weather-card__detail {
   display: flex;
@@ -200,6 +222,14 @@ function updateChartMode (val: boolean) {
     gap: 8px;
   }
 }
+.weather-card__icon {
+  width: 24px;
+  height: 24px;
+   @media (max-width: 600px) {
+      width: 18px;
+  height: 18px;
+  }
+}
 .weather-card__chart {
   width: 100%;
 }
@@ -209,5 +239,12 @@ function updateChartMode (val: boolean) {
   align-items: center;
   width: 100%;
   gap: 16px;
+}
+.weather-card__chart-weitch-label {
+  font-size: 16px;
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
+
 }
 </style>

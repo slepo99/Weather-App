@@ -44,15 +44,21 @@
 import WeatherCard from "@/components/Main/WeatherCard.vue";
 import { ref } from "vue";
 const chartByHour = ref(false);
-const updateChartMode = (val: boolean) => {
-  chartByHour.value = !val;
-  console.log("Chart mode updated. By hour:", !val);
-};
+// const updateChartMode = (val: boolean) => {
+//   chartByHour.value = !val;
+//   console.log("Chart mode updated. By hour:", !val);
+// };
 </script>
 
 <style scoped lang="scss">
 .home-wrapper {
-  margin-top: 24px;
+  margin-top: 32px;
+  @media (max-width: 900px) {
+    margin-top: 26px;
+  }
+  @media (max-width: 600px) {
+    margin-top: 18px;
+  }
 }
 .cards-wrapper {
   display: flex;
