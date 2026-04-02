@@ -46,6 +46,7 @@ const handleClick = () => {
   transition: all 0.3s ease;
   border: 1px solid transparent;
   height: 32px;
+  justify-content: center;
 }
 span {
   font-size: 14px;

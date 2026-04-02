@@ -1,19 +1,31 @@
-import { ref, onMounted, onUnmounted } from 'vue'
-import { BREAKPOINTS } from '@/constants/markup';
-export function useResponsive(breakpoint?: number ) {
-  const isMobile = ref<boolean>(window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.mobile) )
-  const isTablet = ref<boolean>(window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.tablet) && window.innerWidth > (breakpoint ? breakpoint : BREAKPOINTS.mobile) )
-  const isMiniDesktop = ref<boolean>(window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.miniDesktop) && window.innerWidth > (breakpoint ? breakpoint : BREAKPOINTS.tablet) )
-  const isDesktop = ref<boolean>(window.innerWidth > (breakpoint ? breakpoint : BREAKPOINTS.desktop))
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { BREAKPOINTS } from '@/constants/markup'
+
+export function useResponsive() {
+  const width = ref(window.innerWidth)
+
   const handleResize = () => {
-    isMobile.value = window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.mobile)
-    isTablet.value = window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.tablet)
-    isMiniDesktop.value = window.innerWidth <= (breakpoint ? breakpoint : BREAKPOINTS.miniDesktop)
-    isDesktop.value = window.innerWidth > (breakpoint ? breakpoint : BREAKPOINTS.desktop)
+    width.value = window.innerWidth
   }
 
-  onMounted(() => window.addEventListener('resize', handleResize))
-  onUnmounted(() => window.removeEventListener('resize', handleResize))
+  onMounted(() => {
+    window.addEventListener('resize', handleResize)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize)
+  })
+
+  const isMobile = computed(() => width.value <= BREAKPOINTS.mobile)
+  const isTablet = computed(() =>
+    width.value > BREAKPOINTS.mobile && width.value <= BREAKPOINTS.tablet
+  )
+  const isMiniDesktop = computed(() =>
+    width.value > BREAKPOINTS.tablet && width.value <= BREAKPOINTS.miniDesktop
+  )
+  const isDesktop = computed(() =>
+    width.value > BREAKPOINTS.miniDesktop
+  )
 
   return { isMobile, isTablet, isMiniDesktop, isDesktop }
 }

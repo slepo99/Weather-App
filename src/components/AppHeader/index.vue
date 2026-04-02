@@ -12,7 +12,7 @@
           <span class="app-logo__title">Weather App</span>
         </div>
         <div
-          v-if="!isMiniDesktop && router.currentRoute.value.fullPath === ROUTES.HOME"
+          v-if="isDesktopSearchVisible"
           class="app-header__search"
         >
           <CustomInput
@@ -30,7 +30,7 @@
           </CustomBtn>
         </div>
       </div>
-      <div class="app-header__right">
+      <div v-if="!isMobile" class="app-header__right">
         <CustomDropdown
           v-model="locale"
           :options="availableLocales"
@@ -52,7 +52,7 @@
     </div>
     <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <div v-if="isMiniDesktop && router.currentRoute.value.fullPath === ROUTES.HOME" class="app-header__search" id="search-mobile">
+      <div v-if="isMobileSearchVisible" class="app-header__search" id="search-mobile">
         <CustomInput
           v-model:inputValue="searchQuery"
           selectMode
@@ -63,12 +63,15 @@
           class="app-header__search-input"
         />
 
-        <CustomBtn>
+        <CustomBtn :is-loading="true">
+          <template #icon><CustomIcon name="moon" size="24px" /></template>
           <template #label> Додати місто </template>
         </CustomBtn>
       </div>
-      <Navbar />
+      <Navbar v-if="!isMobile"/>
+      <button @click="toggleSidebar">Toggle Sidebar</button>
     </div>
+    
   </header>
 </template>
 
@@ -77,7 +80,7 @@ import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
@@ -87,7 +90,10 @@ import Navbar from "./Navbar.vue";
 import { useResponsive } from "@/composables/useResponsive";
 
 import { useI18n } from "vue-i18n";
-const { isMiniDesktop } = useResponsive();
+const emit = defineEmits<{
+  "toggleSidebar": [];
+}>();
+const { isMiniDesktop, isMobile, isTablet } = useResponsive();
 const { locale, availableLocales } = useI18n();
 
 const themeStore = useThemeStore();
@@ -95,6 +101,16 @@ const router = useRouter();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
 
+function toggleSidebar() {
+  emit("toggleSidebar");
+}
+
+const isDesktopSearchVisible = computed(() => {
+  return (!isMiniDesktop.value && !isTablet.value && !isMobile.value) && router.currentRoute.value.fullPath === ROUTES.HOME
+});
+const isMobileSearchVisible = computed(() => {
+  return (isMiniDesktop.value || isTablet.value || isMobile.value) && router.currentRoute.value.fullPath === ROUTES.HOME
+});
 function searchCity(val: string) {
   if (val) {
     arr.value.push(val);
@@ -140,6 +156,12 @@ function selectCity(val: string | number | null) {
   align-items: center;
   gap: 16px;
   flex: 1;
+  @media (max-width: 478px) {
+    flex-direction: column;
+    button {
+      width: 100%;
+    }
+  }
 }
 .app-header__search-input {
   max-width: 300px;
