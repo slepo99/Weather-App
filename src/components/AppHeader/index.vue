@@ -12,7 +12,7 @@
           <span class="app-logo__title">Weather App</span>
         </div>
         <div
-          v-if="!isTablet && router.currentRoute.value.fullPath === ROUTES.HOME"
+          v-if="!isMiniDesktop && router.currentRoute.value.fullPath === ROUTES.HOME"
           class="app-header__search"
         >
           <CustomInput
@@ -52,7 +52,7 @@
     </div>
     <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <div v-if="isTablet && router.currentRoute.value.fullPath === ROUTES.HOME" class="app-header__search" id="search-mobile">
+      <div v-if="isMiniDesktop && router.currentRoute.value.fullPath === ROUTES.HOME" class="app-header__search" id="search-mobile">
         <CustomInput
           v-model:inputValue="searchQuery"
           selectMode
@@ -87,7 +87,7 @@ import Navbar from "./Navbar.vue";
 import { useResponsive } from "@/composables/useResponsive";
 
 import { useI18n } from "vue-i18n";
-const { isTablet } = useResponsive();
+const { isMiniDesktop } = useResponsive();
 const { locale, availableLocales } = useI18n();
 
 const themeStore = useThemeStore();

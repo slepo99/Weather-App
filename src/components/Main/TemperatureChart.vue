@@ -35,7 +35,7 @@ function createOrUpdateChart() {
           borderWidth: 2,
           borderRadius: 6,
           barThickness: 8,
-          minBarLength: 4,  
+          minBarLength: 0,  
         },
       ],
     },
@@ -51,7 +51,7 @@ function createOrUpdateChart() {
       },
       scales: {
         y: {
-          beginAtZero: false,
+          beginAtZero: true,
           grid: {display: false},
           ticks: { callback: (val) => `${val}°` },
         },
