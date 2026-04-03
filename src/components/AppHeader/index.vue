@@ -49,6 +49,9 @@
           </template>
         </CustomSwitch>
       </div>
+      <div v-else>
+        <CustomBurgerBtn :isActive="test" @click="test = !test"/>
+      </div>
     </div>
     <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
@@ -63,13 +66,12 @@
           class="app-header__search-input"
         />
 
-        <CustomBtn :is-loading="true">
-          <template #icon><CustomIcon name="moon" size="24px" /></template>
+        <CustomBtn>
           <template #label> Додати місто </template>
         </CustomBtn>
       </div>
       <Navbar v-if="!isMobile"/>
-      <button @click="toggleSidebar">Toggle Sidebar</button>
+      <!-- <button @click="toggleSidebar">Toggle Sidebar</button> -->
     </div>
     
   </header>
@@ -89,7 +91,9 @@ import CustomDivider from "../UI/CustomDivider.vue";
 import Navbar from "./Navbar.vue";
 import { useResponsive } from "@/composables/useResponsive";
 
+const test = ref(false);
 import { useI18n } from "vue-i18n";
+import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
 const emit = defineEmits<{
   "toggleSidebar": [];
 }>();
@@ -139,6 +143,9 @@ function selectCity(val: string | number | null) {
   @media (max-width: 900px) {
     padding: 16px;
   }
+    @media (max-width: 478px) {
+    padding: 12px;
+  }
 }
 .app-header__top {
   display: flex;
@@ -158,6 +165,7 @@ function selectCity(val: string | number | null) {
   flex: 1;
   @media (max-width: 478px) {
     flex-direction: column;
+    gap: 8px;
     button {
       width: 100%;
     }
@@ -198,6 +206,10 @@ function selectCity(val: string | number | null) {
      width: 34px;
       height: 34px;
   }
+     @media (max-width: 478px) {
+     width: 24px;
+      height: 24px;
+  }
 }
 .app-logo__title {
   font-size: 32px;
@@ -205,6 +217,9 @@ function selectCity(val: string | number | null) {
   white-space: nowrap;
   @media (max-width: 600px) {
     font-size: 24px;
+  }
+    @media (max-width: 478px) {
+    font-size: 18px;
   }
 }
 .custom-btn:disabled {
@@ -215,6 +230,9 @@ function selectCity(val: string | number | null) {
 .app-header__divider {
   width: 100%;
   margin: 12px 0;
+     @media (max-width: 478px) {
+    font-size: 8px 0;
+  }
 }
 .app-header__bottom {
   width: 100%;

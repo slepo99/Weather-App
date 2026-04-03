@@ -153,6 +153,9 @@ function updateChartMode(val: boolean) {
   @media (max-width: 900px) {
     padding: 16px;
   }
+  @media (max-width: 478px) {
+    padding: 12px;
+  }
 }
 .weather-card__header {
   display: flex;
@@ -167,6 +170,13 @@ function updateChartMode(val: boolean) {
   width: 100%;
   @media (max-width: 600px) {
     gap: 10px;
+  }
+    @media (max-width: 478px) {
+    flex-direction: column;
+    gap: 2px;
+    hr {
+      display: none;
+    }
   }
 }
 .weather-card__city {

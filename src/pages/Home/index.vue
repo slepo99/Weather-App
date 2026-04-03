@@ -59,6 +59,9 @@ const chartByHour = ref(false);
   @media (max-width: 600px) {
     margin-top: 18px;
   }
+      @media (max-width: 478px) {
+      margin-top: 12px;
+  }
 }
 .cards-wrapper {
   display: flex;
