@@ -50,7 +50,7 @@
         </CustomSwitch>
       </div>
       <div v-else>
-        <CustomBurgerBtn :isActive="test" @click="test = !test"/>
+        <CustomBurgerBtn :isActive="isSidebarActive" @click.stop="toggleSidebar"/>
       </div>
     </div>
     <CustomDivider class="app-header__divider" />
@@ -94,6 +94,14 @@ import { useResponsive } from "@/composables/useResponsive";
 const test = ref(false);
 import { useI18n } from "vue-i18n";
 import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
+const props = withDefaults(
+  defineProps<{
+    isSidebarActive: boolean;
+  }>(),
+  {
+    isSidebarActive: false,
+  },
+);
 const emit = defineEmits<{
   "toggleSidebar": [];
 }>();
@@ -104,6 +112,8 @@ const themeStore = useThemeStore();
 const router = useRouter();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
+
+
 
 function toggleSidebar() {
   emit("toggleSidebar");

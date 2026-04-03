@@ -5,6 +5,7 @@
       <CustomFavoriteToggle
         :isFavorite="isFavorite"
         @toggleFavorite="handleToggleFavorite()"
+        @click="console.log('btn pressed')"
       />
     </div>
     <CustomDivider />
