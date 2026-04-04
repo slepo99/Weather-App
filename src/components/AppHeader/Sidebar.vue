@@ -5,11 +5,40 @@
     class="app-header__sidebar"
     :class="{ active: isSidebarActive }"
   >
-    qwe
+    <div class="app-header__sidebar-content">
+      <div class="sidebar-controls">
+        <CustomDropdown
+          v-model="locale"
+          :options="availableLocales"
+          width="70px"
+        />
+        <CustomSwitch
+          :isActive="themeStore.isDark"
+          @update="themeStore.toggleTheme"
+          keepColor
+        >
+          <template #label-left>
+            <CustomIcon name="sun" size="24px" />
+          </template>
+          <template #label-right>
+            <CustomIcon name="moon" size="24px" />
+          </template>
+        </CustomSwitch>
+      </div>
+      <Navbar is-vertical/>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import CustomDropdown from "@/components/UI/CustomDropdown.vue";
+import CustomSwitch from "@/components/UI/CustomSwitch.vue";
+import CustomIcon from "@/components/UI/CustomIcon.vue";
+import { useI18n } from "vue-i18n";
+import { useThemeStore } from "@/stores/theme";
+import Navbar from "./Navbar.vue";
+const { locale, availableLocales } = useI18n();
+const themeStore = useThemeStore();
 const props = withDefaults(
   defineProps<{
     isSidebarActive: boolean;
@@ -31,6 +60,7 @@ const emit = defineEmits<{
   left: 0;
   width: 60%;
   max-width: 320px;
+  padding: 16px;
   height: 100%;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -47,5 +77,17 @@ const emit = defineEmits<{
   background: transparent;
   background: rgba(0, 0, 0, 0.3);
   z-index: 997;
+}
+.sidebar-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.app-header__sidebar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
 }
 </style>

@@ -48,6 +48,7 @@ function toggle() {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
   gap: 6px;
 }
 .switch {
