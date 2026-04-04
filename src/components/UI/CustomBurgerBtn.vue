@@ -19,6 +19,8 @@ const props = withDefaults(
   height: 32px;
   width: 32px;
   cursor: pointer;
+  z-index: 999;
+  position: relative;
 }
 
 .menu-btn-1 span,

@@ -1,4 +1,5 @@
 <template>
+  <div v-if="isSidebarActive" class="overlay" @click="emit('close')"></div>
   <div
     ref="sidebarRef"
     class="app-header__sidebar"
@@ -9,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
 const props = withDefaults(
   defineProps<{
     isSidebarActive: boolean;
@@ -22,29 +22,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "close"): void;
 }>();
-
-const sidebarRef = ref<HTMLElement | null>(null);
-
-const handleClickOutside = (e: MouseEvent) => {
-
-  if (!props.isSidebarActive) return;
-  if (!sidebarRef.value) return;
-
-  const target = e.target as Node;
-
-  if (!sidebarRef.value.contains(target)) {
-    console.log("Clicked outside sidebar");
-    emit("close");
-  }
-};
-
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
-});
 </script>
 
 <style scoped lang="scss">
@@ -63,5 +40,12 @@ onUnmounted(() => {
 }
 .active {
   transform: translateX(0) !important;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 997;
 }
 </style>
