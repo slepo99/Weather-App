@@ -11,14 +11,11 @@
           />
           <span class="app-logo__title">Weather App</span>
         </div>
-        <div
-          v-if="isDesktopSearchVisible"
-          class="app-header__search"
-        >
+        <div v-if="isDesktopSearchVisible" class="app-header__search">
           <CustomInput
             v-model:inputValue="searchQuery"
             selectMode
-            :options="arr"
+            :options="weatherStore.getCitiesForAutocomplete"
             :selectedItem="selectedCity"
             @update:inputValue="searchCity"
             @select="selectCity"
@@ -50,12 +47,19 @@
         </CustomSwitch>
       </div>
       <div v-else>
-        <CustomBurgerBtn :isActive="isSidebarActive" @click.stop="toggleSidebar"/>
+        <CustomBurgerBtn
+          :isActive="isSidebarActive"
+          @click.stop="toggleSidebar"
+        />
       </div>
     </div>
     <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <div v-if="isMobileSearchVisible" class="app-header__search" id="search-mobile">
+      <div
+        v-if="isMobileSearchVisible"
+        class="app-header__search"
+        id="search-mobile"
+      >
         <CustomInput
           v-model:inputValue="searchQuery"
           selectMode
@@ -70,10 +74,9 @@
           <template #label> Додати місто </template>
         </CustomBtn>
       </div>
-      <Navbar v-if="!isMobile"/>
+      <Navbar v-if="!isMobile" />
       <!-- <button @click="toggleSidebar">Toggle Sidebar</button> -->
     </div>
-    
   </header>
 </template>
 
@@ -90,8 +93,9 @@ import CustomIcon from "../UI/CustomIcon.vue";
 import CustomDivider from "../UI/CustomDivider.vue";
 import Navbar from "./Navbar.vue";
 import { useResponsive } from "@/composables/useResponsive";
+import { useWeatherStore } from "@/stores/weather";
+import { useDebouncedFn } from "@/composables/useDebouncedFn";
 
-const test = ref(false);
 import { useI18n } from "vue-i18n";
 import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
 const props = withDefaults(
@@ -103,33 +107,46 @@ const props = withDefaults(
   },
 );
 const emit = defineEmits<{
-  "toggleSidebar": [];
+  toggleSidebar: [];
 }>();
 const { isMiniDesktop, isMobile, isTablet } = useResponsive();
 const { locale, availableLocales } = useI18n();
 
 const themeStore = useThemeStore();
 const router = useRouter();
+const weatherStore = useWeatherStore();
 const searchQuery = ref("");
 const arr = ref<string[]>([]);
 
-
+const debouncedFetchCities = useDebouncedFn((val: string) => {
+  weatherStore.loadCities(val);
+});
 
 function toggleSidebar() {
   emit("toggleSidebar");
 }
 
 const isDesktopSearchVisible = computed(() => {
-  return (!isMiniDesktop.value && !isTablet.value && !isMobile.value) && router.currentRoute.value.fullPath === ROUTES.HOME
+  return (
+    !isMiniDesktop.value &&
+    !isTablet.value &&
+    !isMobile.value &&
+    router.currentRoute.value.fullPath === ROUTES.HOME
+  );
 });
 const isMobileSearchVisible = computed(() => {
-  return (isMiniDesktop.value || isTablet.value || isMobile.value) && router.currentRoute.value.fullPath === ROUTES.HOME
+  return (
+    (isMiniDesktop.value || isTablet.value || isMobile.value) &&
+    router.currentRoute.value.fullPath === ROUTES.HOME
+  );
 });
 function searchCity(val: string) {
-  if (val) {
-    arr.value.push(val);
+  if (val.length) {
+    debouncedFetchCities(val);
   } else {
-    arr.value = [];
+    weatherStore.setCities([]);
+    debouncedFetchCities.cancel();
+    return;
   }
 }
 const selectedCity = ref("");
@@ -153,7 +170,7 @@ function selectCity(val: string | number | null) {
   @media (max-width: 900px) {
     padding: 16px;
   }
-    @media (max-width: 478px) {
+  @media (max-width: 478px) {
     padding: 12px;
   }
 }
@@ -183,7 +200,7 @@ function selectCity(val: string | number | null) {
 }
 .app-header__search-input {
   max-width: 300px;
-   @media (max-width: 600px) {
+  @media (max-width: 600px) {
     max-width: 100%;
   }
 }
@@ -212,13 +229,13 @@ function selectCity(val: string | number | null) {
 .app-logo__image {
   width: 40px;
   height: 40px;
-    @media (max-width: 600px) {
-     width: 34px;
-      height: 34px;
+  @media (max-width: 600px) {
+    width: 34px;
+    height: 34px;
   }
-     @media (max-width: 478px) {
-     width: 24px;
-      height: 24px;
+  @media (max-width: 478px) {
+    width: 24px;
+    height: 24px;
   }
 }
 .app-logo__title {
@@ -228,7 +245,7 @@ function selectCity(val: string | number | null) {
   @media (max-width: 600px) {
     font-size: 24px;
   }
-    @media (max-width: 478px) {
+  @media (max-width: 478px) {
     font-size: 18px;
   }
 }
@@ -240,7 +257,7 @@ function selectCity(val: string | number | null) {
 .app-header__divider {
   width: 100%;
   margin: 12px 0;
-     @media (max-width: 478px) {
+  @media (max-width: 478px) {
     font-size: 8px 0;
   }
 }
