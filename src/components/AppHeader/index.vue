@@ -15,8 +15,9 @@
           <CustomInput
             v-model:inputValue="searchQuery"
             selectMode
-            :options="weatherStore.getCitiesForAutocomplete"
+            :options="cities"
             :selectedItem="selectedCity"
+            option-label="label"
             @update:inputValue="searchCity"
             @select="selectCity"
             class="app-header__search-input"
@@ -116,7 +117,8 @@ const themeStore = useThemeStore();
 const router = useRouter();
 const weatherStore = useWeatherStore();
 const searchQuery = ref("");
-const arr = ref<string[]>([]);
+
+const cities = computed(() => weatherStore.getCitiesForAutocomplete(locale.value));const arr = ref<string[]>([]);
 
 const debouncedFetchCities = useDebouncedFn((val: string) => {
   weatherStore.loadCities(val);
@@ -149,9 +151,9 @@ function searchCity(val: string) {
     return;
   }
 }
-const selectedCity = ref("");
-function selectCity(val: string | number | null) {
-  selectedCity.value = val as string;
+const selectedCity = ref(null);
+function selectCity(val: any) {
+  selectedCity.value = val;
 }
 </script>
 

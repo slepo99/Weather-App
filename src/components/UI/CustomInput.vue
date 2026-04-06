@@ -14,8 +14,11 @@
         type="text"
         class="input-bar"
       />
-     <div v-if="props.selectMode && props.selectedItem" class="input-selected-content">
-        {{ selectedItem }}
+      <div
+        v-if="props.selectMode && props.selectedItem"
+        class="input-selected-content"
+      >
+        {{ getLabel(props.selectedItem) }}
       </div>
       <button
         v-if="props.inputValue || props.selectedItem"
@@ -32,12 +35,12 @@
       class="input-autocomplete"
     >
       <div
-        v-for="(value, i) in props.options"
+        v-for="(opt, i) in props.options"
         :key="i"
         class="autocomplite-element"
       >
-        <div @mousedown="selectItem(value)">
-          {{ value }}
+        <div @mousedown="selectItem(opt)">
+          {{ getLabel(opt) }}
         </div>
       </div>
     </div>
@@ -46,27 +49,29 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
-
+type Option = any;
 interface Props {
   inputValue: string;
   selectMode?: boolean;
-  selectedItem?: string | number;
-  options?: (string | number)[];
+  selectedItem?: any;
+  options?: Option[];
   label?: string;
   error?: string;
   disabled?: boolean;
   width?: string | number;
+    optionLabel?: string;
+  optionValue?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   selectMode: false,
   options: () => [],
   disabled: false,
-  width: '100%',
+  width: "100%",
 });
 const emit = defineEmits<{
-  "update:inputValue": [value: string];          
-  "select": [value: string | number];
+  "update:inputValue": [value: string];
+  select: [value: any];
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
@@ -87,27 +92,59 @@ const onFocus = () => {
   }
 };
 
-function selectItem(val: string | number) {
-  emit("select", val);
+function selectItem(opt: Option) {
+  emit("select", getValue(opt));
   emit("update:inputValue", "");
   isOpen.value = false;
 }
 
 const handleClickOutside = (event: MouseEvent) => {
   if (!containerRef.value) return;
-
-  if (!containerRef.value.contains(event.target as Node)) {
+  const input = containerRef.value.querySelector("input");
+  if (
+    !containerRef.value.contains(event.target as Node) &&
+    document.activeElement !== input
+  ) {
     isOpen.value = false;
     isFocused.value = false;
   }
 };
 function clearInput() {
   if (props.selectedItem) {
-    emit("select", "");
+    emit("select", null);
   } else {
     emit("update:inputValue", "");
   }
   isOpen.value = false;
+}
+
+function getLabel(opt: Option): string {
+  console.log("Getting label for option:", opt);
+  if (!opt) return "";
+
+  if (props.optionLabel && typeof opt === "object") {
+    return opt[props.optionLabel];
+  }
+
+  if (typeof opt === "object" && "label" in opt) {
+    return opt.label;
+  }
+
+  return String(opt);
+}
+
+function getValue(opt: Option) {
+  if (!opt) return null;
+
+  if (props.optionValue && typeof opt === "object") {
+    return opt[props.optionValue];
+  }
+
+  if (typeof opt === "object" && "value" in opt) {
+    return opt.value;
+  }
+
+  return opt;
 }
 watch(
   () => props.options?.length,

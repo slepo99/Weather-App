@@ -6,6 +6,7 @@ interface MainStateModel {
   count: number;
   cities: City[];
 }
+
 export const useWeatherStore = defineStore("weather", {
   state: (): MainStateModel => {
     return {
@@ -14,11 +15,17 @@ export const useWeatherStore = defineStore("weather", {
     };
   },
   getters: {
-    getCitiesForAutocomplete: (state) => {
+    getCitiesForAutocomplete: (state) =>  (locale: string) => {
       return state.cities.map((city) => {
-        const country = city.country ? `, ${city.country}` : "";
-        const state = city.state ? `, ${city.state}` : "";
-        return `${city.name}${state}${country}`;
+        const cityName = (locale === "UK" && city.ukName) ? city.ukName : city.enName || city.name;
+        console.log("City name for autocomplete:", cityName);
+        return {
+          name: cityName,
+          lat: city.lat,
+          lon: city.lon,
+          label: `${cityName}, ${city.state}, ${city.country}`,
+          id: `${city.lat}-${city.lon}`
+        };
       });
     },
   },
