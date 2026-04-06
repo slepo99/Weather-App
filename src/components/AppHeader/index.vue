@@ -16,14 +16,13 @@
             v-model:inputValue="searchQuery"
             selectMode
             :options="cities"
-            :selectedItem="selectedCity"
             option-label="label"
             @update:inputValue="searchCity"
             @select="selectCity"
             class="app-header__search-input"
           />
 
-          <CustomBtn>
+          <CustomBtn :disabled="!weatherStore.autoCompleteCity">
             <template #label> Додати місто </template>
           </CustomBtn>
         </div>
@@ -99,6 +98,7 @@ import { useDebouncedFn } from "@/composables/useDebouncedFn";
 
 import { useI18n } from "vue-i18n";
 import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
+import type { AutocompleteCity } from "@/stores/weather/models";
 const props = withDefaults(
   defineProps<{
     isSidebarActive: boolean;
@@ -151,9 +151,9 @@ function searchCity(val: string) {
     return;
   }
 }
-const selectedCity = ref(null);
-function selectCity(val: any) {
-  selectedCity.value = val;
+const selectedCity = ref<AutocompleteCity | null>(null);
+function selectCity(city: AutocompleteCity | null) {
+  weatherStore.setSelectedCity(city);
 }
 </script>
 

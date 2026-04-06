@@ -7,3 +7,10 @@ export interface City {
   country: string;
   state?: string;
 }
+export interface AutocompleteCity {
+  name: string;
+  lat: number;
+  lon: number;
+  label: string;
+  id: string;
+}

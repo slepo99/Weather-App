@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { searchCities } from "@/api/weather";
 import { adaptCities } from "@/adapters/city.adapter";
-import type { City } from "@/stores/weather/models";
+import type { City, AutocompleteCity } from "@/stores/weather/models";
 interface MainStateModel {
   count: number;
   cities: City[];
+  autoCompleteCity: AutocompleteCity | null;
 }
 
 export const useWeatherStore = defineStore("weather", {
@@ -12,6 +13,7 @@ export const useWeatherStore = defineStore("weather", {
     return {
       cities: [],
       count: 0,
+      autoCompleteCity: null,
     };
   },
   getters: {
@@ -29,6 +31,9 @@ export const useWeatherStore = defineStore("weather", {
     },
   },
   actions: {
+    setSelectedCity(city: AutocompleteCity | null) {
+      this.autoCompleteCity = city;
+    },
     setCities(cities: City[]) {
       this.cities = cities;
     },

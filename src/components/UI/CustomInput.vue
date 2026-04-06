@@ -11,20 +11,20 @@
         @input="onInput"
         @focus="onFocus"
         :disabled="isInputDisabled"
-        :placeholder="!props.selectedItem ? props.label || 'Type something...' : ''"
+        :placeholder="!selectedItem ? props.label || 'Type something...' : ''"
         type="text"
         class="input-bar"
       />
       <div
-        v-if="props.selectMode && props.selectedItem"
+        v-if="props.selectMode && selectedItem"
         class="input-selected-content"
       >
-        {{ getLabel(props.selectedItem) }}
+        {{ getLabel(selectedItem) }}
       </div>
 
       <!-- Clear button for input or selected item -->
       <button
-        v-if="props.inputValue || props.selectedItem"
+        v-if="props.inputValue || selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -44,7 +44,7 @@
         :key="i"
         class="autocomplite-element"
       >
-        <div @mousedown="selectItem(opt)">
+        <div @mousedown.left="selectItem(opt)">
           {{ getLabel(opt) }}
         </div>
       </div>
@@ -60,7 +60,6 @@ type Option = any;
 interface Props {
   inputValue: string;
   selectMode?: boolean;
-  selectedItem?: any;
   options?: Option[];
   label?: string;
   error?: string;
@@ -84,14 +83,13 @@ const emit = defineEmits<{
 
 const containerRef = ref<HTMLElement | null>(null);
 
-const isOpen = ref(false);      // Dropdown open state
-const isFocused = ref(false);   // Input focus state
-
+const isOpen = ref(false); // Dropdown open state
+const isFocused = ref(false); // Input focus state
+const selectedItem = ref(null); // Currently selected item
 // Computed to disable input if selectMode is active and item is selected
 const isInputDisabled = computed(function () {
-  return props.disabled || (props.selectMode && !!props.selectedItem);
+  return props.disabled || (props.selectMode && !!selectedItem.value);
 });
-
 
 // Emit input value changes
 function onInput(event: Event): void {
@@ -109,19 +107,21 @@ function onFocus(): void {
 
 // Select an option from dropdown
 function selectItem(opt: Option): void {
-  emit("select", getValue(opt));       // Emit selected value
-  emit("update:inputValue", "");       // Clear input
-  isOpen.value = false;                // Close dropdown
+  selectedItem.value = getValue(opt); // Update selected item
+  emit("select", getValue(opt)); // Emit selected value
+  emit("update:inputValue", ""); // Clear input
+  isOpen.value = false; // Close dropdown
 }
 
 // Clear input or selected item
 function clearInput(): void {
-  if (props.selectedItem) {
-    emit("select", null);              // Deselect item
+  if (selectedItem.value) {
+    selectedItem.value = null; // Clear selected item
+    emit("select", null); // Deselect item
   } else {
-    emit("update:inputValue", "");     // Clear input value
+    emit("update:inputValue", ""); // Clear input value
   }
-  isOpen.value = false;                // Close dropdown
+  isOpen.value = false; // Close dropdown
 }
 
 // Get display label for an option
@@ -160,8 +160,10 @@ function getValue(opt: Option) {
 function handleClickOutside(event: MouseEvent): void {
   if (!containerRef.value) return;
   const input = containerRef.value.querySelector("input");
-  if (!containerRef.value.contains(event.target as Node) &&
-      document.activeElement !== input) {
+  if (
+    !containerRef.value.contains(event.target as Node) &&
+    document.activeElement !== input
+  ) {
     isOpen.value = false;
     isFocused.value = false;
   }
@@ -176,7 +178,7 @@ watch(
     } else {
       isOpen.value = false;
     }
-  }
+  },
 );
 
 // Add/remove document click listener
@@ -222,6 +224,9 @@ onBeforeUnmount(function () {
 }
 
 .input-autocomplete {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   position: absolute;
   top: 30px;
   background-color: var(--content-bg);
@@ -244,7 +249,6 @@ onBeforeUnmount(function () {
 
 .autocomplite-element {
   cursor: pointer;
-  height: 24px;
   padding: 0 8px;
 }
 
@@ -273,6 +277,11 @@ onBeforeUnmount(function () {
   transform: translateY(-50%);
   pointer-events: none;
   color: var(--text);
+  white-space: nowrap;
+  width: -webkit-fill-available;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 24px;
 }
 
 span {
