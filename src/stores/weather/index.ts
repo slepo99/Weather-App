@@ -18,12 +18,11 @@ export const useWeatherStore = defineStore("weather", {
     getCitiesForAutocomplete: (state) =>  (locale: string) => {
       return state.cities.map((city) => {
         const cityName = (locale === "UK" && city.ukName) ? city.ukName : city.enName || city.name;
-        console.log("City name for autocomplete:", cityName);
         return {
           name: cityName,
           lat: city.lat,
           lon: city.lon,
-          label: `${cityName}, ${city.state}, ${city.country}`,
+          label: `${cityName}, ${city.state ? city.state + ", " : ''} ${city.country ? city.country : ''}`,
           id: `${city.lat}-${city.lon}`
         };
       });
