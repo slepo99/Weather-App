@@ -1,7 +1,7 @@
 <template>
   <div class="card-wrapper">
     <div class="weather-card__header">
-      <span class="weather-card__city">London</span>
+      <span class="weather-card__city">{{ `${props.weather.city}, ${props.weather.country}` }}</span>
       <CustomFavoriteToggle
         :isFavorite="isFavorite"
         @toggleFavorite="handleToggleFavorite()"
@@ -16,7 +16,9 @@
           name="https://openweathermap.org/img/wn/10d@4x.png"
           alt="weather icon"
         />
-        <span class="weather-card__temp">18°C</span>
+        <span class="weather-card__temp"
+          >{{ Math.floor(props.weather.currentTemp) }}°C</span
+        >
       </div>
       <CustomDivider vertical />
       <div class="weather-card__details">
@@ -29,7 +31,7 @@
               alt="weather icon"
             />
           </div>
-          <span>5 м/с</span>
+          <span>{{ props.weather.currentWind }} м/с</span>
         </div>
         <div class="weather-card__detail">
           <div>
@@ -40,7 +42,7 @@
               alt="weather icon"
             />
           </div>
-          <span>60%</span>
+          <span>{{ props.weather.currentHumidity }} %</span>
         </div>
         <div class="weather-card__detail">
           <div>
@@ -51,7 +53,7 @@
               alt="weather icon"
             />
           </div>
-          <span>1012 гПа</span>
+          <span>{{ props.weather.currentPressure }} гПа</span>
         </div>
       </div>
     </div>
@@ -60,15 +62,9 @@
     <div class="weather-card__chart">
       <TemperatureChart
         :labels="
-          isChartByDays
-            ? props.weather.chart.hourly.labels
-            : props.weather.chart.daily.labels
+          isChartByDays ? props.chart.daily.labels : props.chart.hourly.labels
         "
-        :data="
-          isChartByDays
-            ? props.weather.chart.hourly.data
-            : props.weather.chart.daily.data
-        "
+        :data="isChartByDays ? props.chart.daily.data : props.chart.hourly.data"
       />
     </div>
     <CustomDivider />
@@ -79,15 +75,19 @@
         keepColor
       >
         <template #label-left>
-          <span class="weather-card__chart-weitch-label">{{ t("weatherCard.chart.mode.hour") }}</span>
+          <span class="weather-card__chart-weitch-label">{{
+            t("weatherCard.chart.mode.hour")
+          }}</span>
         </template>
         <template #label-right>
-          <span class="weather-card__chart-weitch-label">{{ t("weatherCard.chart.mode.day") }}</span>
+          <span class="weather-card__chart-weitch-label">{{
+            t("weatherCard.chart.mode.day")
+          }}</span>
         </template>
       </CustomSwitch>
       <CustomBtn>
         <template #icon>
-          <CustomIcon name="delete-light" size="24px"/>
+          <CustomIcon name="delete-light" size="24px" />
         </template>
       </CustomBtn>
     </div>
@@ -107,24 +107,23 @@ import CustomSwitch from "../UI/CustomSwitch.vue";
 const props = defineProps<{
   weather: {
     city: string;
-    temperature: number;
-    icon: string;
-    wind: number;
-    humidity: number;
-    pressure: number;
-
-    chart: {
-      hourly: {
-        labels: string[];
-        data: number[];
-      };
-      daily: {
-        labels: string[];
-        data: number[];
-      };
+    currentTemp: number;
+    currentIcon: string;
+    currentWind: number;
+    currentHumidity: number;
+    currentPressure: number;
+    country: string;
+  };
+  chart: {
+    hourly: {
+      labels: string[];
+      data: number[];
+    };
+    daily: {
+      labels: string[];
+      data: number[];
     };
   };
-
   isFavorite: boolean;
 }>();
 const isChartByDays = ref(false);
@@ -172,7 +171,7 @@ function updateChartMode(val: boolean) {
   @media (max-width: 600px) {
     gap: 10px;
   }
-    @media (max-width: 478px) {
+  @media (max-width: 478px) {
     flex-direction: column;
     gap: 2px;
     hr {
@@ -236,9 +235,9 @@ function updateChartMode(val: boolean) {
 .weather-card__icon {
   width: 24px;
   height: 24px;
-   @media (max-width: 600px) {
-      width: 18px;
-  height: 18px;
+  @media (max-width: 600px) {
+    width: 18px;
+    height: 18px;
   }
 }
 .weather-card__chart {
@@ -256,6 +255,5 @@ function updateChartMode(val: boolean) {
   @media (max-width: 600px) {
     font-size: 12px;
   }
-
 }
 </style>

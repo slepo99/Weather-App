@@ -1,39 +1,20 @@
 <template>
   <div class="home-wrapper">
     <div class="cards-wrapper">
-      <div v-for="value in 5" :key="value">
+      <div v-for="value in weatherStore.weather" :key="value.city">
         <WeatherCard
-          :weather="{
-            city: 'London',
-            temperature: 18,
-            icon: 'https://openweathermap.org/img/wn/10d@4x.png',
-
-            wind: 5,
-            humidity: 60,
-            pressure: 1012,
-
-            chart: {
-              hourly: {
-                labels: [
-                  '00:00',
-                  '03:00',
-                  '06:00',
-                  '09:00',
-                  '12:00',
-                  '15:00',
-                  '18:00',
-                  '21:00',
-                ],
-                data: [-2, -4, -6, 3, 12, 15, 9, 4],
-              },
-              daily: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-                data: [10, 12, 8, 14, 11],
-              },
+          :weather="value"
+          :chart="{
+            hourly: {
+              labels: value.weatherByHours.times,
+              data: value.weatherByHours.temps
             },
+            daily: {
+              labels: value.weatherByDays.days,
+              data: value.weatherByDays.temps
+            }
           }"
           :isFavorite="false"
-          :isChartByHour="chartByHour"
         />
       </div>
     </div>
@@ -42,12 +23,21 @@
 
 <script setup lang="ts">
 import WeatherCard from "@/components/Main/WeatherCard.vue";
-import { ref } from "vue";
-const chartByHour = ref(false);
+import { useWeatherStore } from "@/stores/weather"; 
+import { useI18n } from "vue-i18n";
+import { ref, onMounted } from "vue";
+
+
+const { locale } = useI18n();
+const weatherStore = useWeatherStore();
+const chartByHour = ref(true);
 // const updateChartMode = (val: boolean) => {
 //   chartByHour.value = !val;
 //   console.log("Chart mode updated. By hour:", !val);
 // };
+onMounted(() => {
+  weatherStore.loadUserWeatherByIP(locale.value);
+})
 </script>
 
 <style scoped lang="scss">

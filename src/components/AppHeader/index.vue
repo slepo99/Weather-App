@@ -22,7 +22,7 @@
             class="app-header__search-input"
           />
 
-          <CustomBtn :disabled="!weatherStore.autoCompleteCity">
+          <CustomBtn :disabled="!weatherStore.selectedCity">
             <template #label> Додати місто </template>
           </CustomBtn>
         </div>
@@ -63,14 +63,14 @@
         <CustomInput
           v-model:inputValue="searchQuery"
           selectMode
-          :options="arr"
-          :selectedItem="selectedCity"
+          :options="cities"
+          option-label="label"
           @update:inputValue="searchCity"
           @select="selectCity"
           class="app-header__search-input"
         />
 
-        <CustomBtn>
+        <CustomBtn :disabled="!weatherStore.selectedCity">
           <template #label> Додати місто </template>
         </CustomBtn>
       </div>
@@ -118,7 +118,9 @@ const router = useRouter();
 const weatherStore = useWeatherStore();
 const searchQuery = ref("");
 
-const cities = computed(() => weatherStore.getCitiesForAutocomplete(locale.value));const arr = ref<string[]>([]);
+const cities = computed(() =>
+  weatherStore.getCitiesForAutocomplete(locale.value),
+);
 
 const debouncedFetchCities = useDebouncedFn((val: string) => {
   weatherStore.loadCities(val);
@@ -151,7 +153,6 @@ function searchCity(val: string) {
     return;
   }
 }
-const selectedCity = ref<AutocompleteCity | null>(null);
 function selectCity(city: AutocompleteCity | null) {
   weatherStore.setSelectedCity(city);
 }
