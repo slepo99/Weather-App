@@ -7,11 +7,51 @@
     "wind": "Wind",
     "humidity": "Humidity",
     "pressure": "Pressure",
+    "windPerSecond": "m/s",
+    "hectopascals": "hPa",
     "chart": {
       "mode": {
         "hour": "Hours",
         "day": "5 Days"
       }
+    },
+
+    "weather": {
+      "clear": "Clear",
+      "fewClouds": "Few clouds",
+      "scatteredClouds": "Scattered clouds",
+      "brokenClouds": "Broken clouds",
+      "overcast": "Overcast",
+
+      "lightRain": "Light rain",
+      "moderateRain": "Rain",
+      "heavyRain": "Heavy rain",
+      "showerRain": "Shower rain",
+      "freezingRain": "Freezing rain",
+
+      "drizzle": "Drizzle",
+
+      "lightSnow": "Light snow",
+      "snow": "Snow",
+      "heavySnow": "Heavy snow",
+      "sleet": "Sleet",
+      "rainSnow": "Rain and snow",
+
+      "thunderstorm": "Thunderstorm",
+
+      "fog": "Fog",
+      "mist": "Mist",
+      "haze": "Haze",
+      "tornado": "Tornado",
+      "atmosphere": "Low visibility",
+
+      "unknown": "Unknown"
+    }
+  },
+  "header": {
+    "search": {
+      "inputPlaceholder": "City name",
+      "buttonLabel": "Add city"
     }
   }
 }

@@ -3,20 +3,21 @@ export function formatWeatherData(data: WeatherResponse) {
   const now = Date.now() / 1000;
   const next24h = now + 24 * 3600;
 
-  const weatherByHoursRaw = data.list
-    .filter(item => item.dt >= now && item.dt <= next24h);
+  const weatherByHoursRaw = data.list.filter(
+    (item) => item.dt >= now && item.dt <= next24h,
+  );
 
   const weatherByHours = {
-    times: weatherByHoursRaw.map(item =>
-      item.dt_txt.split(' ')[1].slice(0, 5)
+    times: weatherByHoursRaw.map((item) =>
+      item.dt_txt.split(" ")[1].slice(0, 5),
     ),
-    temps: weatherByHoursRaw.map(item => item.main.temp),
+    temps: weatherByHoursRaw.map((item) => item.main.temp),
   };
 
   const daysObj: Record<string, number[]> = {};
 
   for (const item of data.list) {
-    const day = item.dt_txt.split(' ')[0];
+    const day = item.dt_txt.split(" ")[0];
     if (!daysObj[day]) daysObj[day] = [];
     daysObj[day].push(item.main.temp);
   }
@@ -27,8 +28,8 @@ export function formatWeatherData(data: WeatherResponse) {
   }));
 
   const weatherByDays = {
-    days: weatherByDaysRaw.map(item => item.day),
-    temps: weatherByDaysRaw.map(item => item.temp),
+    days: weatherByDaysRaw.map((item) => item.day),
+    temps: weatherByDaysRaw.map((item) => item.temp),
   };
 
   return {
@@ -43,6 +44,7 @@ export function formatWeatherData(data: WeatherResponse) {
     currentWind: data.list[0].wind.speed,
     currentHumidity: data.list[0].main.humidity,
     currentPressure: data.list[0].main.pressure,
+    currentWeatherId: data.list[0].weather[0].id ?? 0,
     id: data.city.id,
     isFavorite: false,
     weatherByHours,

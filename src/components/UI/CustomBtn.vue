@@ -1,5 +1,5 @@
 <template>
-  <button @click="handleClick" :disabled="props.disabled" class="custom-btn">
+  <button @click="handleClick" :disabled="props.disabled" class="custom-btn" :style="styles">
     <slot name="icon"> </slot>
     <div v-if="$slots.label" class="btn-label-wrapper">
       <span class="text-default btn-label">
@@ -12,16 +12,19 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import CustomLoader from "./CustomLoader.vue";
 
 const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     isLoading?: boolean;
+    width?: string;
   }>(),
   {
     disabled: false,
     isLoading: false,
+    width: 'auto'
   },
 );
 const emit = defineEmits(["click"]);
@@ -31,6 +34,11 @@ const handleClick = () => {
     emit("click");
   }
 };
+const styles = computed(() => {
+  return {
+    width: props.width
+  }
+})
 </script>
 
 <style scoped>

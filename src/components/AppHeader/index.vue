@@ -14,6 +14,7 @@
         <div v-if="isDesktopSearchVisible" class="app-header__search">
           <CustomInput
             v-model:inputValue="searchQuery"
+            :label="t('header.search.inputPlaceholder')"
             selectMode
             :options="cities"
             option-label="label"
@@ -22,8 +23,8 @@
             class="app-header__search-input"
           />
 
-          <CustomBtn :disabled="!weatherStore.selectedCity">
-            <template #label> Додати місто </template>
+          <CustomBtn :disabled="!weatherStore.selectedCity" width="120px">
+            <template #label> {{ t('header.search.buttonLabel') }} </template>
           </CustomBtn>
         </div>
       </div>
@@ -70,7 +71,7 @@
           class="app-header__search-input"
         />
 
-        <CustomBtn :disabled="!weatherStore.selectedCity">
+        <CustomBtn :disabled="!weatherStore.selectedCity" :width="isMobile ? '100%' : 'auto'">
           <template #label> Додати місто </template>
         </CustomBtn>
       </div>
@@ -111,7 +112,7 @@ const emit = defineEmits<{
   toggleSidebar: [];
 }>();
 const { isMiniDesktop, isMobile, isTablet } = useResponsive();
-const { locale, availableLocales } = useI18n();
+const { locale, availableLocales, t } = useI18n();
 
 const themeStore = useThemeStore();
 const router = useRouter();

@@ -13,7 +13,7 @@
       <div class="weather-card__current">
         <CustomIcon
           class="weather-card__icon-current"
-          name="https://openweathermap.org/img/wn/10d@4x.png"
+          :name="openWeatherIconUrl(props.weather.currentIcon)"
           alt="weather icon"
         />
         <span class="weather-card__temp"
@@ -31,7 +31,7 @@
               alt="weather icon"
             />
           </div>
-          <span>{{ props.weather.currentWind }} м/с</span>
+          <span>{{ props.weather.currentWind }} {{ t("weatherCard.windPerSecond") }}</span>
         </div>
         <div class="weather-card__detail">
           <div>
@@ -53,7 +53,7 @@
               alt="weather icon"
             />
           </div>
-          <span>{{ props.weather.currentPressure }} гПа</span>
+          <span>{{ props.weather.currentPressure }} {{ t("weatherCard.hectopascals") }}</span>
         </div>
       </div>
     </div>
@@ -103,7 +103,7 @@ import CustomIcon from "../UI/CustomIcon.vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import TemperatureChart from "./TemperatureChart.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
-
+import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather"
 const props = defineProps<{
   weather: {
     city: string;

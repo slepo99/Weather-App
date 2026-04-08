@@ -7,11 +7,50 @@
     "wind": "Вітер",
     "humidity": "Вологість",
     "pressure": "Тиск",
+    "windPerSecond": "м/с",
+    "hectopascals": "гПа",
     "chart": {
       "mode": {
         "hour": "Години",
         "day": "5 Днів"
       }
+    },
+    "weather": {
+      "clear": "Ясно",
+      "fewClouds": "Невелика хмарність",
+      "scatteredClouds": "Перемінна хмарність",
+      "brokenClouds": "Хмарно",
+      "overcast": "Похмуро",
+
+      "lightRain": "Легкий дощ",
+      "moderateRain": "Дощ",
+      "heavyRain": "Сильний дощ",
+      "showerRain": "Зливовий дощ",
+      "freezingRain": "Льодовий дощ",
+
+      "drizzle": "Мряка",
+
+      "lightSnow": "Легкий сніг",
+      "snow": "Сніг",
+      "heavySnow": "Сильний сніг",
+      "sleet": "Мокрий сніг",
+      "rainSnow": "Дощ зі снігом",
+
+      "thunderstorm": "Гроза",
+
+      "fog": "Туман",
+      "mist": "Легкий туман",
+      "haze": "Димка",
+      "tornado": "Торнадо",
+      "atmosphere": "Погана видимість",
+
+      "unknown": "Невідомо"
+    }
+  },
+  "header": {
+    "search": {
+      "inputPlaceholder": "Назва города",
+      "buttonLabel": "Додати місто"
     }
   }
 }

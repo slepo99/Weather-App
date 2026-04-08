@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-
+import { useI18n } from "vue-i18n";
 type Option = any;
 
 interface Props {
@@ -82,7 +82,7 @@ const emit = defineEmits<{
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
-
+const { t } = useI18n()
 const isOpen = ref(false); // Dropdown open state
 const isFocused = ref(false); // Input focus state
 const selectedItem = ref(null); // Currently selected item

@@ -44,6 +44,7 @@ export interface FormattedWeather {
   currentHumidity: number;
   currentPressure: number;
   id: number;
+  currentWeatherId: number;
   weatherByHours: WeatherByHours;
   weatherByDays: WeatherByDays;
   isFavorite: boolean;
