@@ -14,7 +14,7 @@
               data: value.weatherByDays.temps
             }
           }"
-          :isFavorite="false"
+          :isFavorite="value.isFavorite"
         />
       </div>
     </div>
@@ -25,16 +25,11 @@
 import WeatherCard from "@/components/Main/WeatherCard.vue";
 import { useWeatherStore } from "@/stores/weather"; 
 import { useI18n } from "vue-i18n";
-import { ref, onMounted } from "vue";
+import {  onMounted } from "vue";
 
 
 const { locale } = useI18n();
 const weatherStore = useWeatherStore();
-const chartByHour = ref(true);
-// const updateChartMode = (val: boolean) => {
-//   chartByHour.value = !val;
-//   console.log("Chart mode updated. By hour:", !val);
-// };
 onMounted(() => {
   weatherStore.loadUserWeatherByIP(locale.value);
 })

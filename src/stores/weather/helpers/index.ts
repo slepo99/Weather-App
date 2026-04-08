@@ -44,7 +44,7 @@ export function formatWeatherData(data: WeatherResponse) {
     currentHumidity: data.list[0].main.humidity,
     currentPressure: data.list[0].main.pressure,
     id: data.city.id,
-
+    isFavorite: false,
     weatherByHours,
     weatherByDays,
   };
