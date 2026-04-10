@@ -6,12 +6,21 @@
   --text: #111;
   --btn-bg: #6778da;
   --icon: #2e3548;
+  --skeleton-wave: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  --skeleton-bg: #ced3dd;
 }
 
 :root.dark {
---app-bg: #1e232f;
+  --app-bg: #1e232f;
   --content-bg: #2e3548;
   --text: #fff;
-    --btn-bg: #6778da;
+  --btn-bg: #6778da;
   --icon: #e6e6e6;
+  --skeleton-wave: linear-gradient(90deg, #fff0, #ffffff1a, #fff0);
+  --skeleton-bg: #292e3a;
 }

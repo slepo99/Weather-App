@@ -16,9 +16,12 @@
           :name="openWeatherIconUrl(props.weather.currentIcon)"
           alt="weather icon"
         />
-        <span class="weather-card__temp"
+        <div class="weather-card__status">
+          <span class="weather-card__temp"
           >{{ Math.floor(props.weather.currentTemp) }}°C</span
         >
+        <span class="weather-card__weather-state">{{ t(getWeatherKey(props.weather.currentWeatherId)) }}</span>
+        </div>
       </div>
       <CustomDivider vertical />
       <div class="weather-card__details">
@@ -91,6 +94,7 @@
         </template>
       </CustomBtn>
     </div>
+                <CustomSkeleton/>
   </div>
 </template>
 
@@ -103,6 +107,7 @@ import CustomIcon from "../UI/CustomIcon.vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import TemperatureChart from "./TemperatureChart.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
+import CustomSkeleton from "../UI/CustomSkeleton.vue";
 import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather"
 const props = defineProps<{
   weather: {
@@ -113,6 +118,7 @@ const props = defineProps<{
     currentHumidity: number;
     currentPressure: number;
     country: string;
+    currentWeatherId: number;
   };
   chart: {
     hourly: {
@@ -192,8 +198,12 @@ function updateChartMode(val: boolean) {
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 30%;
   @media (max-width: 600px) {
     gap: 8px;
+  }
+  @media (max-width: 478px) {
+    width: 100%;
   }
 }
 .weather-card__icon-current {
@@ -210,6 +220,22 @@ function updateChartMode(val: boolean) {
   @media (max-width: 600px) {
     font-size: 20px;
   }
+}
+.weather-card__status {
+  display: flex;
+  flex-direction: column;
+      gap: 8px;
+  @media (max-width: 478px) {
+    flex-direction: row;
+    flex: 1;
+    justify-content: space-between;
+  }
+}
+.weather-card__weather-state {
+  white-space: nowrap;
+    @media (max-width: 478px) {
+      font-size: 14px;
+    }
 }
 .weather-card__details {
   display: flex;

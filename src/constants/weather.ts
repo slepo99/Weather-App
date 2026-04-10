@@ -1,0 +1,1 @@
+export const MAX_CITIES_QUANTITY = 5

@@ -1,5 +1,5 @@
 export function openWeatherIconUrl(icon: string, size: string = "2x") {
-  return `https://openweathermap.org/payload/api/media/file/${icon}@${size}.png`;
+  return `https://openweathermap.org/payload/api/media/file/${icon}.png`;
 }
 
 export function getWeatherKey(id: number): string {
