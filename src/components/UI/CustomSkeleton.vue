@@ -8,22 +8,28 @@ const props = withDefaults(
   defineProps<{
     width?: string;
     height?: string;
+    rounded?: boolean
+    minWidth?: string;
   }>(),
   {
     width: "100%",
-    height: "100%"
+    height: "100%",
+    rounded: false,
+    minWidth: "unset"
   },
 );
 const styles = computed(() => ({
   width: props.width,
-  height: props.height
+  height: props.rounded ? "unset" : props.height,
+  borderRadius: props.rounded ? "50%" : "6px",
+  aspectRatio: props.rounded ? "1/1" : "unset",
+  minWidth: props.minWidth
 }));
 </script>
 
 <style scoped lang="scss">
 .skeleton{
   background:var(--skeleton-bg);
-  border-radius:6px;
   margin-bottom:10px;
   position:relative;
   overflow:hidden;

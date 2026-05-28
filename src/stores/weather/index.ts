@@ -33,7 +33,7 @@ export const useWeatherStore = defineStore("weather", {
       weather: [],
       defaultWeatherLoaded: false,
       isCityLoading: false,
-      isWeatherLoading: false
+      isWeatherLoading: false,
     };
   },
   getters: {
@@ -96,7 +96,7 @@ export const useWeatherStore = defineStore("weather", {
 
       if (!this.userCity) return;
       try {
-        this.isWeatherLoading = true
+        this.isWeatherLoading = true;
         const weatherResponse = await getWeatherForecast(
           this.userCity!.lat,
           this.userCity!.lon,
@@ -109,11 +109,9 @@ export const useWeatherStore = defineStore("weather", {
         console.error(e);
         this.defaultWeatherLoaded = false;
       } finally {
-        this.isWeatherLoading = false
+        this.isWeatherLoading = false;
       }
     },
-    async loadWeather() {
-      
-    }
+    async loadWeather() {},
   },
 });

@@ -1,7 +1,9 @@
 <template>
   <div class="card-wrapper">
     <div class="weather-card__header">
-      <span class="weather-card__city">{{ `${props.weather.city}, ${props.weather.country}` }}</span>
+      <span class="weather-card__city">{{
+        `${props.weather.city}, ${props.weather.country}`
+      }}</span>
       <CustomFavoriteToggle
         :isFavorite="isFavorite"
         @toggleFavorite="handleToggleFavorite()"
@@ -18,9 +20,11 @@
         />
         <div class="weather-card__status">
           <span class="weather-card__temp"
-          >{{ Math.floor(props.weather.currentTemp) }}°C</span
-        >
-        <span class="weather-card__weather-state">{{ t(getWeatherKey(props.weather.currentWeatherId)) }}</span>
+            >{{ Math.floor(props.weather.currentTemp) }}°C</span
+          >
+          <span class="weather-card__weather-state">{{
+            t(getWeatherKey(props.weather.currentWeatherId))
+          }}</span>
         </div>
       </div>
       <CustomDivider vertical />
@@ -34,7 +38,10 @@
               alt="weather icon"
             />
           </div>
-          <span>{{ props.weather.currentWind }} {{ t("weatherCard.windPerSecond") }}</span>
+          <span
+            >{{ props.weather.currentWind }}
+            {{ t("weatherCard.windPerSecond") }}</span
+          >
         </div>
         <div class="weather-card__detail">
           <div>
@@ -56,7 +63,10 @@
               alt="weather icon"
             />
           </div>
-          <span>{{ props.weather.currentPressure }} {{ t("weatherCard.hectopascals") }}</span>
+          <span
+            >{{ props.weather.currentPressure }}
+            {{ t("weatherCard.hectopascals") }}</span
+          >
         </div>
       </div>
     </div>
@@ -94,7 +104,7 @@
         </template>
       </CustomBtn>
     </div>
-                <CustomSkeleton/>
+    <CustomSkeleton />
   </div>
 </template>
 
@@ -108,7 +118,7 @@ import CustomBtn from "../UI/CustomBtn.vue";
 import TemperatureChart from "./TemperatureChart.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomSkeleton from "../UI/CustomSkeleton.vue";
-import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather"
+import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather";
 const props = defineProps<{
   weather: {
     city: string;
@@ -168,6 +178,7 @@ function updateChartMode(val: boolean) {
   width: 100%;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 .weather-card__info {
   display: flex;
@@ -198,7 +209,7 @@ function updateChartMode(val: boolean) {
   display: flex;
   align-items: center;
   gap: 16px;
-  width: 30%;
+  // width: 30%;
   @media (max-width: 600px) {
     gap: 8px;
   }
@@ -224,7 +235,8 @@ function updateChartMode(val: boolean) {
 .weather-card__status {
   display: flex;
   flex-direction: column;
-      gap: 8px;
+  gap: 8px;
+  flex: 1;
   @media (max-width: 478px) {
     flex-direction: row;
     flex: 1;
@@ -233,9 +245,9 @@ function updateChartMode(val: boolean) {
 }
 .weather-card__weather-state {
   white-space: nowrap;
-    @media (max-width: 478px) {
-      font-size: 14px;
-    }
+  @media (max-width: 478px) {
+    font-size: 14px;
+  }
 }
 .weather-card__details {
   display: flex;

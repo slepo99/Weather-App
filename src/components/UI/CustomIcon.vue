@@ -1,13 +1,20 @@
 <template>
- <div>
-   <div class="custom-icon" :style="containerStyle">
-    <img
-      v-if="isRemote"
-      :src="props.name"
-      :alt="props.name"
-      :style="imageStyle"
-      class="icon-image"
-    />
+  <div class="custom-icon" :style="containerStyle">
+    <div v-if="isRemote" class="icon-remote">
+      <CustomLoadrer v-if="isLoading && !hasError" :width="imageStyle.width" />
+
+      <img
+        v-show="!isLoading && !hasError"
+        :src="props.name"
+        :alt="props.name"
+        :style="imageStyle"
+        @load="isLoading = false"
+        @error="hasError = true"
+        class="icon-image"
+      />
+
+      <span v-if="hasError" class="icon-fallback">?</span>
+    </div>
 
     <component
       v-else-if="IconComponent"
@@ -18,11 +25,11 @@
 
     <span v-else class="icon-fallback">?</span>
   </div>
- </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from "vue";
+import { computed, defineAsyncComponent, ref, watch } from "vue";
+import CustomLoadrer from "./CustomLoader.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -37,8 +44,20 @@ const props = withDefaults(
   },
 );
 
+const isLoading = ref(true);
+const hasError = ref(false);
+
 const isRemote = computed(
   () => props.name.startsWith("http://") || props.name.startsWith("https://"),
+);
+
+watch(
+  () => props.name,
+  () => {
+    isLoading.value = true;
+    hasError.value = false;
+  },
+  { immediate: true },
 );
 
 const IconComponent = computed(() => {
@@ -47,13 +66,17 @@ const IconComponent = computed(() => {
   return defineAsyncComponent(() =>
     import(`../../assets/icons/${props.name}.svg`).catch((err) => {
       console.warn(`[CustomIcon] Icon not found: ${props.name}.svg`, err);
+
       return { render: () => null };
     }),
   );
 });
 
 const getSize = computed(() => {
-  if (props.size === undefined || props.size === null || props.size === "") return "100%";
+  if (props.size === undefined || props.size === null || props.size === "") {
+    return "100%";
+  }
+
   return typeof props.size === "number" ? `${props.size}px` : props.size;
 });
 
@@ -61,8 +84,6 @@ const containerStyle = computed(() => ({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  width: getSize.value,
-  height: getSize.value,
   backgroundColor: props.backgroundColor,
   borderRadius: "50%",
 }));
@@ -87,5 +108,20 @@ const svgStyle = computed(() => ({
 
 .icon-svg {
   display: block;
+}
+
+.icon-image {
+  display: block;
+}
+
+.icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0.6;
+}
+.icon-remote {
+  width: 100%;
 }
 </style>

@@ -1,13 +1,15 @@
 <template>
-  <button @click="handleClick" :disabled="props.disabled" class="custom-btn" :style="styles">
+  <button
+    @click="handleClick"
+    :disabled="props.disabled"
+    class="custom-btn"
+    :style="styles"
+  >
     <slot name="icon"> </slot>
-    <div v-if="$slots.label" class="btn-label-wrapper">
-      <span class="text-default btn-label">
-        <slot name="label"> </slot>
-      </span>
-     
+    <div v-if="$slots.label" class="btn-label-wrapper text-default btn-label">
+      <slot name="label"> </slot>
     </div>
-     <CustomLoader v-if="props.isLoading" />
+    <CustomLoader v-if="props.isLoading" />
   </button>
 </template>
 
@@ -24,7 +26,7 @@ const props = withDefaults(
   {
     disabled: false,
     isLoading: false,
-    width: 'auto'
+    width: "auto",
   },
 );
 const emit = defineEmits(["click"]);
@@ -36,9 +38,9 @@ const handleClick = () => {
 };
 const styles = computed(() => {
   return {
-    width: props.width
-  }
-})
+    width: props.width,
+  };
+});
 </script>
 
 <style scoped>
