@@ -10,10 +10,10 @@ export interface ApiCity {
   state?: string;
 }
 export interface UserCityByIP {
-  city: string;
+  city?: string;
   latitude: number;
   longitude: number;
-  country_code: string;
+  country_code?: string;
 }
 
 //----------------------- Weather API response models ------------------//

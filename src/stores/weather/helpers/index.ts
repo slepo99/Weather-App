@@ -1,4 +1,5 @@
 import type { WeatherResponse } from "@/api/weather/models";
+
 export function formatWeatherData(data: WeatherResponse) {
   const now = Date.now() / 1000;
   const next24h = now + 24 * 3600;
@@ -35,7 +36,7 @@ export function formatWeatherData(data: WeatherResponse) {
   return {
     city: data.city.name,
     country: data.city.country,
-
+    coord: data.city.coord,
     currentTemp: data.list[0].main.temp,
     currentFeelsLike: data.list[0].main.feels_like,
     currentDescription: data.list[0].weather[0]?.description ?? "",

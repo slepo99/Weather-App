@@ -38,7 +38,7 @@ const styles = computed(() => ({
   content: "";
   position: absolute;
   inset: 0;
-  width: 90%; /* было 30% */
+  width: 90%;
   background: var(--skeleton-wave);
   transform: translateX(-100%);
   animation: shimmer 1.7s infinite;

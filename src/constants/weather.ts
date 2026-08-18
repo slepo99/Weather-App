@@ -1,1 +1,1 @@
-export const MAX_CITIES_QUANTITY = 5
+export const MAX_CITIES_QUANTITY = 5 as const;

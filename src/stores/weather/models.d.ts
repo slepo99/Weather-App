@@ -34,7 +34,10 @@ export interface WeatherByDays {
 export interface FormattedWeather {
   city: string;
   country: string;
-
+  coord: {
+    lat: number;
+    lon: number;
+  };
   currentTemp: number;
   currentFeelsLike: number;
   currentDescription: string;

@@ -23,8 +23,12 @@
             class="app-header__search-input"
           />
 
-          <CustomBtn :disabled="!weatherStore.selectedCity" width="120px">
-            <template #label> {{ t('header.search.buttonLabel') }} </template>
+          <CustomBtn
+            :disabled="!weatherStore.selectedCity"
+            width="120px"
+            @click="loadCityWeather"
+          >
+            <template #label> {{ t("header.search.buttonLabel") }} </template>
           </CustomBtn>
         </div>
       </div>
@@ -71,8 +75,11 @@
           class="app-header__search-input"
         />
 
-        <CustomBtn :disabled="!weatherStore.selectedCity" :width="isMobile ? '100%' : 'auto'">
-          <template #label> Додати місто </template>
+        <CustomBtn
+          :disabled="!weatherStore.selectedCity"
+          :width="isMobile ? '100%' : 'auto'"
+        >
+          <template #label> {{ t("header.search.buttonLabel") }} </template>
         </CustomBtn>
       </div>
       <Navbar v-if="!isMobile" />
@@ -100,6 +107,9 @@ import { useDebouncedFn } from "@/composables/useDebouncedFn";
 import { useI18n } from "vue-i18n";
 import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
 import type { AutocompleteCity } from "@/stores/weather/models";
+import { MAX_CITIES_QUANTITY } from "@/constants/weather";
+import { isSameCity } from "@/composables/useWeather";
+import { useNotification } from "@/composables/useNotification";
 const props = withDefaults(
   defineProps<{
     isSidebarActive: boolean;
@@ -156,6 +166,27 @@ function searchCity(val: string) {
 }
 function selectCity(city: AutocompleteCity | null) {
   weatherStore.setSelectedCity(city);
+}
+function loadCityWeather() {
+  if (weatherStore.weather.length >= MAX_CITIES_QUANTITY) {
+    alert(
+      "You have reached the maximum number of cities. Please remove a city before adding a new one.",
+    );
+    return;
+  }
+  const selectedCity = weatherStore.selectedCity;
+  if (selectedCity) {
+    if (weatherStore.weather.some((c) => isSameCity(c, selectedCity))) {
+      // alert("This city is already in your list.");
+      const { showNotification } = useNotification()
+      showNotification("This city is already in your list.");
+      return;
+    }
+    weatherStore.loadWeatherByCity(locale.value);
+    // weatherStore.addCityToList(weatherStore.selectedCity);
+     weatherStore.setSelectedCity(null);
+     searchQuery.value = "";
+  }
 }
 </script>
 

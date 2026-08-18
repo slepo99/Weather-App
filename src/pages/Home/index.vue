@@ -40,13 +40,13 @@ import { onMounted } from "vue";
 const { locale } = useI18n();
 const weatherStore = useWeatherStore();
 onMounted(() => {
-  weatherStore.loadUserWeatherByIP(locale.value);
+  weatherStore.loadInitialWeather(locale.value);
 });
 </script>
 
 <style scoped lang="scss">
 .home-wrapper {
-  margin-top: 32px;
+  margin: 32px 0;
   @media (max-width: 900px) {
     margin-top: 26px;
   }
