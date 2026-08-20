@@ -51,7 +51,12 @@
   "header": {
     "search": {
       "inputPlaceholder": "City name",
-      "buttonLabel": "Add city"
+      "buttonLabel": "Add city",
+      "error": {
+        "maxCities": "You can add up to 5 cities only",
+        "cityNotFound": "City not found",
+        "cityAlreadyAdded": "City already added"
+      }
     }
   }
 }

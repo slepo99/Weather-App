@@ -50,7 +50,12 @@
   "header": {
     "search": {
       "inputPlaceholder": "Назва города",
-      "buttonLabel": "Додати місто"
+      "buttonLabel": "Додати місто",
+      "error": {
+        "maxCities": "Ви можете додати лише до 5 міст",
+        "cityNotFound": "Місто не знайдено",
+        "cityAlreadyAdded": "Місто вже додано"
+      }
     }
   }
 }

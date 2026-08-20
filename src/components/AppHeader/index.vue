@@ -13,13 +13,13 @@
         </div>
         <div v-if="isDesktopSearchVisible" class="app-header__search">
           <CustomInput
-            v-model:inputValue="searchQuery"
+            v-model:inputValue="weatherStore.searchQuery"
+            v-model:selected-item="weatherStore.selectedCity"
             :label="t('header.search.inputPlaceholder')"
             selectMode
             :options="cities"
             option-label="label"
             @update:inputValue="searchCity"
-            @select="selectCity"
             class="app-header__search-input"
           />
 
@@ -66,24 +66,25 @@
         id="search-mobile"
       >
         <CustomInput
-          v-model:inputValue="searchQuery"
+          v-model:inputValue="weatherStore.searchQuery"
+          v-model:selected-item="weatherStore.selectedCity"
+          :label="t('header.search.inputPlaceholder')"
           selectMode
           :options="cities"
           option-label="label"
           @update:inputValue="searchCity"
-          @select="selectCity"
           class="app-header__search-input"
         />
 
         <CustomBtn
           :disabled="!weatherStore.selectedCity"
           :width="isMobile ? '100%' : 'auto'"
+          @click="loadCityWeather"
         >
           <template #label> {{ t("header.search.buttonLabel") }} </template>
         </CustomBtn>
       </div>
       <Navbar v-if="!isMobile" />
-      <!-- <button @click="toggleSidebar">Toggle Sidebar</button> -->
     </div>
   </header>
 </template>
@@ -93,7 +94,7 @@ import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
@@ -102,14 +103,13 @@ import CustomDivider from "../UI/CustomDivider.vue";
 import Navbar from "./Navbar.vue";
 import { useResponsive } from "@/composables/useResponsive";
 import { useWeatherStore } from "@/stores/weather";
-import { useDebouncedFn } from "@/composables/useDebouncedFn";
+
 
 import { useI18n } from "vue-i18n";
 import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
-import type { AutocompleteCity } from "@/stores/weather/models";
-import { MAX_CITIES_QUANTITY } from "@/constants/weather";
-import { isSameCity } from "@/composables/useWeather";
-import { useNotification } from "@/composables/useNotification";
+import { useHeader } from "@/composables/useHeader";
+
+const { loadCityWeather, searchCity, cities } = useHeader();
 const props = withDefaults(
   defineProps<{
     isSidebarActive: boolean;
@@ -127,15 +127,6 @@ const { locale, availableLocales, t } = useI18n();
 const themeStore = useThemeStore();
 const router = useRouter();
 const weatherStore = useWeatherStore();
-const searchQuery = ref("");
-
-const cities = computed(() =>
-  weatherStore.getCitiesForAutocomplete(locale.value),
-);
-
-const debouncedFetchCities = useDebouncedFn((val: string) => {
-  weatherStore.loadCities(val);
-});
 
 function toggleSidebar() {
   emit("toggleSidebar");
@@ -149,45 +140,14 @@ const isDesktopSearchVisible = computed(() => {
     router.currentRoute.value.fullPath === ROUTES.HOME
   );
 });
+
 const isMobileSearchVisible = computed(() => {
   return (
     (isMiniDesktop.value || isTablet.value || isMobile.value) &&
     router.currentRoute.value.fullPath === ROUTES.HOME
   );
 });
-function searchCity(val: string) {
-  if (val.length) {
-    debouncedFetchCities(val);
-  } else {
-    weatherStore.setCities([]);
-    debouncedFetchCities.cancel();
-    return;
-  }
-}
-function selectCity(city: AutocompleteCity | null) {
-  weatherStore.setSelectedCity(city);
-}
-function loadCityWeather() {
-  if (weatherStore.weather.length >= MAX_CITIES_QUANTITY) {
-    alert(
-      "You have reached the maximum number of cities. Please remove a city before adding a new one.",
-    );
-    return;
-  }
-  const selectedCity = weatherStore.selectedCity;
-  if (selectedCity) {
-    if (weatherStore.weather.some((c) => isSameCity(c, selectedCity))) {
-      // alert("This city is already in your list.");
-      const { showNotification } = useNotification()
-      showNotification("This city is already in your list.");
-      return;
-    }
-    weatherStore.loadWeatherByCity(locale.value);
-    // weatherStore.addCityToList(weatherStore.selectedCity);
-     weatherStore.setSelectedCity(null);
-     searchQuery.value = "";
-  }
-}
+
 </script>
 
 <style scoped lang="scss">
@@ -216,9 +176,6 @@ function loadCityWeather() {
   justify-content: space-between;
   width: 100%;
   gap: 16px;
-  // @media (max-width: 1024px) {
-  //   align-items: flex-start;
-  // }
 }
 .app-header__search {
   display: flex;
@@ -244,11 +201,6 @@ function loadCityWeather() {
   align-items: center;
   flex: 1;
   gap: 24px;
-  // @media (max-width: 1024px) {
-  //   flex-direction: column;
-  //   align-items: unset;
-  //   gap: 12px;
-  // }
 }
 .app-header__right {
   display: flex;

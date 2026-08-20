@@ -58,6 +58,7 @@ type Option = any;
 
 interface Props {
   inputValue: string;
+  selectedItem: Option | null;
   selectMode?: boolean;
   options?: Option[];
   label?: string;
@@ -73,20 +74,22 @@ const props = withDefaults(defineProps<Props>(), {
   options: () => [],
   disabled: false,
   width: "100%",
+  selectedItem: null,
 });
 
 const emit = defineEmits<{
   "update:inputValue": [string];
+  "update:selectedItem": [Option | null];
   select: [any];
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false); // Dropdown open state
 const isFocused = ref(false); // Input focus state
-const selectedItem = ref(null); // Currently selected item
+//const selectedItem = ref(null); // Currently selected item
 // Computed to disable input if selectMode is active and item is selected
 const isInputDisabled = computed(function () {
-  return props.disabled || (props.selectMode && !!selectedItem.value);
+  return props.disabled || (props.selectMode && !!props.selectedItem);
 });
 
 // Emit input value changes
@@ -105,16 +108,17 @@ function onFocus(): void {
 
 // Select an option from dropdown
 function selectItem(opt: Option): void {
-  selectedItem.value = getValue(opt); // Update selected item
+  // selectedItem.value = getValue(opt); // Update selected item
   emit("select", getValue(opt)); // Emit selected value
   emit("update:inputValue", ""); // Clear input
+  emit("update:selectedItem", getValue(opt)); // Update selected item
   isOpen.value = false; // Close dropdown
 }
 
 // Clear input or selected item
 function clearInput(): void {
-  if (selectedItem.value) {
-    selectedItem.value = null; // Clear selected item
+  if (props.selectedItem) {
+    emit("update:selectedItem", null); // Clear selected item
     emit("select", null); // Deselect item
   } else {
     emit("update:inputValue", ""); // Clear input value

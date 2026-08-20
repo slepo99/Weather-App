@@ -24,11 +24,13 @@ interface MainStateModel {
   defaultWeatherLoaded: boolean;
   isCityLoading: boolean;
   isWeatherLoading: boolean;
+  searchQuery: string;
 }
 
 export const useWeatherStore = defineStore("weather", {
   state: (): MainStateModel => {
     return {
+      searchQuery: "",
       cities: [],
       selectedCity: null,
       userCity: null,
