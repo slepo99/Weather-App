@@ -21,6 +21,8 @@
               },
             }"
             :isFavorite="value.isFavorite"
+            @removeCityWeather="weatherStore.removeCityWeather(value.id)"
+            @toggleFavorite="toggleFavorite"
           />
         </div>
 
@@ -39,6 +41,11 @@ import { onMounted } from "vue";
 
 const { locale } = useI18n();
 const weatherStore = useWeatherStore();
+
+function toggleFavorite(id: number) {
+  weatherStore.toggleFavorite(id);
+}
+
 onMounted(() => {
   weatherStore.loadInitialWeather(locale.value);
 });

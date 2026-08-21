@@ -5,9 +5,8 @@
         `${props.weather.city}, ${props.weather.country}`
       }}</span>
       <CustomFavoriteToggle
-        :isFavorite="isFavorite"
+        :isFavorite="props.isFavorite"
         @toggleFavorite="handleToggleFavorite()"
-        @click="console.log('btn pressed')"
       />
     </div>
     <CustomDivider />
@@ -98,7 +97,7 @@
           }}</span>
         </template>
       </CustomSwitch>
-      <CustomBtn>
+      <CustomBtn @click="removeCityWeather">
         <template #icon>
           <CustomIcon name="delete-light" size="24px" />
         </template>
@@ -119,6 +118,7 @@ import TemperatureChart from "./TemperatureChart.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomSkeleton from "../UI/CustomSkeleton.vue";
 import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather";
+
 const props = defineProps<{
   weather: {
     city: string;
@@ -129,6 +129,7 @@ const props = defineProps<{
     currentPressure: number;
     country: string;
     currentWeatherId: number;
+    id: number;
   };
   chart: {
     hourly: {
@@ -142,16 +143,22 @@ const props = defineProps<{
   };
   isFavorite: boolean;
 }>();
+
+const emit = defineEmits<{
+  toggleFavorite: [id: number];
+  removeCityWeather: [id: number];
+}>();
 const isChartByDays = ref(false);
 
 const { t } = useI18n();
-const isFavorite = ref(false);
 const handleToggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
+  emit("toggleFavorite", props.weather.id);
 };
 function updateChartMode(val: boolean) {
   isChartByDays.value = val;
-  console.log("Chart mode updated. By hour:", val);
+}
+function removeCityWeather() {
+  emit("removeCityWeather", props.weather.id);
 }
 </script>
 

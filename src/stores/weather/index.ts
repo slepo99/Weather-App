@@ -76,7 +76,15 @@ export const useWeatherStore = defineStore("weather", {
     setCities(cities: City[]) {
       this.cities = cities;
     },
-
+    removeCityWeather(id: number) {
+      this.weather = this.weather.filter((weather) => weather.id !== id);
+    },
+    toggleFavorite(id: number) {
+      const weather = this.weather.find((weather) => weather.id === id);
+      if(weather && weather.isFavorite) {
+      
+      }
+    },
     async loadCities(cityName: string) {
       const response = await searchCities(cityName);
       const adaptedCities = adaptCities(response.data);
