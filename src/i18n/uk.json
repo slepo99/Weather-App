@@ -57,5 +57,10 @@
         "cityAlreadyAdded": "Місто вже додано"
       }
     }
+  },
+  "favorites": {
+    "error": {
+      "maxFavorites": "Ви можете додати лише до 5 міст у обране"
+    }
   }
 }

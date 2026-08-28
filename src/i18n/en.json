@@ -58,5 +58,10 @@
         "cityAlreadyAdded": "City already added"
       }
     }
+  },
+  "favorites": {
+    "error": {
+      "maxFavorites": "You can add up to 5 cities to favorites only"
+    }
   }
 }
