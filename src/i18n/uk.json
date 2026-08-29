@@ -15,6 +15,12 @@
         "day": "5 Днів"
       }
     },
+    "modal": {
+      "title": "Видалити місто",
+      "message": "Видалити це місто ?",
+      "confirmButton": "Так",
+      "cancelButton": "Ні"
+    },
     "weather": {
       "clear": "Ясно",
       "fewClouds": "Невелика хмарність",
@@ -61,6 +67,11 @@
   "favorites": {
     "error": {
       "maxFavorites": "Ви можете додати лише до 5 міст у обране"
+    },
+    "modal": {
+      "message": "Видалити це місто з обраного ?",
+      "confirmButton": "Так",
+      "cancelButton": "Ні"
     }
   }
 }

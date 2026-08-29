@@ -15,6 +15,12 @@
         "day": "5 Days"
       }
     },
+    "modal": {
+      "title": "Remove city",
+      "message": "Remove this city ?",
+      "confirmButton": "Yes",
+      "cancelButton": "No"
+    },
 
     "weather": {
       "clear": "Clear",
@@ -62,6 +68,11 @@
   "favorites": {
     "error": {
       "maxFavorites": "You can add up to 5 cities to favorites only"
+    },
+    "modal": {
+      "message": "Remove this city from favorites ?",
+      "confirmButton": "Yes",
+      "cancelButton": "No"
     }
   }
 }

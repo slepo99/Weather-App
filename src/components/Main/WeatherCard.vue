@@ -5,6 +5,7 @@
         `${props.weather.city}, ${props.weather.country}`
       }}</span>
       <CustomFavoriteToggle
+        v-if="props.isFavoriteToggleVisible"
         :isFavorite="props.isFavorite"
         @toggleFavorite="handleToggleFavorite()"
       />
@@ -119,7 +120,32 @@ import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomSkeleton from "../UI/CustomSkeleton.vue";
 import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather";
 
-const props = defineProps<{
+// const props = defineProps<{
+//   weather: {
+//     city: string;
+//     currentTemp: number;
+//     currentIcon: string;
+//     currentWind: number;
+//     currentHumidity: number;
+//     currentPressure: number;
+//     country: string;
+//     currentWeatherId: number;
+//     id: number;
+//   };
+//   chart: {
+//     hourly: {
+//       labels: string[];
+//       data: number[];
+//     };
+//     daily: {
+//       labels: string[];
+//       data: number[];
+//     };
+//   };
+//   isFavorite: boolean;
+//   isFavoriteToggleVisible: boolean;
+// }>();
+const props = withDefaults(defineProps<{
   weather: {
     city: string;
     currentTemp: number;
@@ -141,9 +167,11 @@ const props = defineProps<{
       data: number[];
     };
   };
-  isFavorite: boolean;
-}>();
-
+  isFavorite?: boolean;
+  isFavoriteToggleVisible?: boolean;
+}>(), {
+  isFavoriteToggleVisible: true,
+});
 const emit = defineEmits<{
   toggleFavorite: [id: number];
   removeCityWeather: [id: number];
