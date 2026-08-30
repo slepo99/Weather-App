@@ -51,7 +51,8 @@
       "atmosphere": "Погана видимість",
 
       "unknown": "Невідомо"
-    }
+    },
+    "emptyMessage": "Ще немає доданих міст"
   },
   "header": {
     "search": {
@@ -72,6 +73,7 @@
       "message": "Видалити це місто з обраного ?",
       "confirmButton": "Так",
       "cancelButton": "Ні"
-    }
+    },
+    "emptyMessage": "Ще немає обраних міст"
   }
 }

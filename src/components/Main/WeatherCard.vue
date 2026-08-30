@@ -120,31 +120,6 @@ import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomSkeleton from "../UI/CustomSkeleton.vue";
 import { openWeatherIconUrl, getWeatherKey } from "../../utils/weather";
 
-// const props = defineProps<{
-//   weather: {
-//     city: string;
-//     currentTemp: number;
-//     currentIcon: string;
-//     currentWind: number;
-//     currentHumidity: number;
-//     currentPressure: number;
-//     country: string;
-//     currentWeatherId: number;
-//     id: number;
-//   };
-//   chart: {
-//     hourly: {
-//       labels: string[];
-//       data: number[];
-//     };
-//     daily: {
-//       labels: string[];
-//       data: number[];
-//     };
-//   };
-//   isFavorite: boolean;
-//   isFavoriteToggleVisible: boolean;
-// }>();
 const props = withDefaults(defineProps<{
   weather: {
     city: string;
@@ -172,22 +147,27 @@ const props = withDefaults(defineProps<{
 }>(), {
   isFavoriteToggleVisible: true,
 });
+
 const emit = defineEmits<{
   toggleFavorite: [id: number];
   removeCityWeather: [id: number];
 }>();
-const isChartByDays = ref(false);
 
+const isChartByDays = ref(false);
 const { t } = useI18n();
+
 const handleToggleFavorite = () => {
   emit("toggleFavorite", props.weather.id);
 };
+
 function updateChartMode(val: boolean) {
   isChartByDays.value = val;
 }
+
 function removeCityWeather() {
   emit("removeCityWeather", props.weather.id);
 }
+
 </script>
 
 <style scoped lang="scss">

@@ -9,6 +9,11 @@
       >
         <WeatherCardSkeleton />
       </template>
+      <template v-else-if="!favoritesStore.isWeatherLoading && !favoritesStore.favoriteCitiesWeather.length">
+        <div class="favorites-empty-message">
+          <h3>{{ t("favorites.emptyMessage") }}</h3>
+        </div>
+      </template>
       <template v-else>
         <div
           v-for="value in favoritesStore.favoriteCitiesWeather"
@@ -94,6 +99,9 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+.favorites-empty-message {
+  text-align: center;
 }
 .city-remove-modal__actions {
   display: flex;

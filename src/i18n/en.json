@@ -52,7 +52,8 @@
       "atmosphere": "Low visibility",
 
       "unknown": "Unknown"
-    }
+    },
+    "emptyMessage": "No cities added yet"
   },
   "header": {
     "search": {
@@ -73,6 +74,7 @@
       "message": "Remove this city from favorites ?",
       "confirmButton": "Yes",
       "cancelButton": "No"
-    }
+    },
+    "emptyMessage": "No favorite cities yet"
   }
 }

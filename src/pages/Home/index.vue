@@ -6,6 +6,11 @@
       >
         <WeatherCardSkeleton />
       </template>
+      <template v-else-if="!weatherStore.isWeatherLoading && !weatherStore.weather.length">
+        <div class="cards-wrapper__empty-message">
+          <h3>{{ t("weatherCard.emptyMessage") }}</h3>
+        </div>
+      </template>
       <template v-else>
         <div v-for="value in weatherStore.weather" :key="value.id">
           <WeatherCard
@@ -108,5 +113,8 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   gap: 8px;
+}
+.cards-wrapper__empty-message {
+  text-align: center;
 }
 </style>
