@@ -149,7 +149,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-  toggleFavorite: [id: number];
+  toggleFavorite: [];
   removeCityWeather: [id: number];
 }>();
 
@@ -157,7 +157,7 @@ const isChartByDays = ref(false);
 const { t } = useI18n();
 
 const handleToggleFavorite = () => {
-  emit("toggleFavorite", props.weather.id);
+  emit("toggleFavorite");
 };
 
 function updateChartMode(val: boolean) {

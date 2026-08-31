@@ -73,8 +73,8 @@ const { locale, t } = useI18n();
 const weatherStore = useWeatherStore();
 const favoritesStore = useFavoritesStore();
 const isRemoveModalOpen = ref(false);
-const cityIdToRemove = ref<string | null>(null);
-
+const cityIdToRemove = ref<number | null>(null);
+  
 function onToggleFavorite(weather: FormattedWeather) {
   const { showNotification } = useNotification();
   const result = favoritesStore.toggleFavorite(weather);
@@ -83,14 +83,16 @@ function onToggleFavorite(weather: FormattedWeather) {
   }
 }
 
-function requestRemoveCity(cityId: string) {
+function requestRemoveCity(cityId: number) {
   cityIdToRemove.value = cityId;
   isRemoveModalOpen.value = true;
 }
 
 function confirmRemoveCity() {
+  if(cityIdToRemove.value === null) return;
   weatherStore.removeCityWeather(cityIdToRemove.value);
   isRemoveModalOpen.value = false;
+  cityIdToRemove.value = null;
 }
 
 function closeRemoveModal() {

@@ -7,9 +7,17 @@
           !favoritesStore.favoriteCitiesWeather.length
         "
       >
-        <WeatherCardSkeleton />
+        <WeatherCardSkeleton
+          v-for="i in favoritesStore.favoriteCities"
+          :key="i.id"
+        />
       </template>
-      <template v-else-if="!favoritesStore.isWeatherLoading && !favoritesStore.favoriteCitiesWeather.length">
+      <template
+        v-else-if="
+          !favoritesStore.isWeatherLoading &&
+          !favoritesStore.favoriteCitiesWeather.length
+        "
+      >
         <div class="favorites-empty-message">
           <h3>{{ t("favorites.emptyMessage") }}</h3>
         </div>
@@ -34,7 +42,6 @@
             :isFavoriteToggleVisible="false"
             :isFavorite="favoritesStore.isFavorite(value.id)"
             @removeCityWeather="requestRemoveCity(value)"
-
           />
         </div>
 
@@ -82,8 +89,10 @@ function requestRemoveCity(weather: FormattedWeather) {
   isRemoveModalOpen.value = true;
 }
 function confirmRemoveCity() {
+  if (!cityWeatherToRemove.value) return;
   favoritesStore.removeFavorite(cityWeatherToRemove.value);
   isRemoveModalOpen.value = false;
+  cityWeatherToRemove.value = null;
 }
 function closeRemoveModal() {
   isRemoveModalOpen.value = false;

@@ -35,7 +35,7 @@ export const useFavoritesStore = defineStore("favorites", {
     },
     toggleFavorite(city: FormattedWeather): ToggleFavoriteResult {
       const index = this.favoriteCities.findIndex((c) => c.id === city.id);
-
+      console.log(city);
       if (index !== -1) {
         this.favoriteCities.splice(index, 1);
         this.saveFavoritesToStorage();
@@ -63,24 +63,28 @@ export const useFavoritesStore = defineStore("favorites", {
       const index = this.favoriteCities.findIndex((c) => c.id === city.id);
       if (index !== -1) {
         this.favoriteCities.splice(index, 1);
-        this.favoriteCitiesWeather = this.favoriteCitiesWeather.filter((w) => w.id !== city.id);
+        this.favoriteCitiesWeather = this.favoriteCitiesWeather.filter(
+          (w) => w.id !== city.id,
+        );
         this.saveFavoritesToStorage();
-      }
-    },
-    async loadWeather(city: FavoriteCity, lang: string) {
-      if (!city) return;
-      this.isWeatherLoading = true;
-      try {
-        const res = await getWeatherForecast(city.lat, city.lon, lang);
-        this.setFavoriteCitiesWeather(formatWeatherData(res.data));
-      } finally {
-        this.isWeatherLoading = false;
       }
     },
     async loadFavoriteCitiesWeather(lang: string) {
       this.favoriteCitiesWeather = [];
-      for (const favoriteCity of this.favoriteCities) {
-        await this.loadWeather(favoriteCity, lang);
+      this.isWeatherLoading = true;
+
+      try {
+        const weather = await Promise.all(
+          this.favoriteCities.map(async (city) => {
+            const response = await getWeatherForecast(city.lat, city.lon, lang);
+
+            return formatWeatherData(response.data);
+          }),
+        );
+
+        this.favoriteCitiesWeather = weather;
+      } finally {
+        this.isWeatherLoading = false;
       }
     },
   },

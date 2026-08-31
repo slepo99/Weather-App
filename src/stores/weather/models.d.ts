@@ -50,6 +50,5 @@ export interface FormattedWeather {
   currentWeatherId: number;
   weatherByHours: WeatherByHours;
   weatherByDays: WeatherByDays;
-  isFavorite: boolean;
 }
 //---------------------------

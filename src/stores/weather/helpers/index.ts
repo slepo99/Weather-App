@@ -47,7 +47,6 @@ export function formatWeatherData(data: WeatherResponse) {
     currentPressure: data.list[0].main.pressure,
     currentWeatherId: data.list[0].weather[0].id ?? 0,
     id: data.city.id,
-    isFavorite: false,
     weatherByHours,
     weatherByDays,
   };
