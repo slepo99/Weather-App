@@ -29,7 +29,7 @@ function createOrUpdateChart() {
       datasets: [
         {
           label: props.title || "",
-          data: props.data,
+          data: props.data.map((temp) => Math.round(temp)),
           backgroundColor: "#3b82f6",
           borderColor: "#2563eb",
           borderWidth: 2,
@@ -62,7 +62,10 @@ function createOrUpdateChart() {
     },
   });
 }
-onMounted(() => setTimeout(createOrUpdateChart, 50));
+
+onMounted(() => {
+  createOrUpdateChart();
+});
 
 watch(
   () => [props.labels, props.data],
