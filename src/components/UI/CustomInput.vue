@@ -52,145 +52,107 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-type Option = any;
+<script setup lang="ts" generic="T extends object">
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
 interface Props {
-  inputValue: string;
-  selectedItem: Option | null;
-  selectMode?: boolean;
-  options?: Option[];
-  label?: string;
-  error?: string;
-  disabled?: boolean;
-  width?: string | number;
-  optionLabel?: string;
-  optionValue?: string;
+  inputValue: string
+  selectedItem: T | null
+  selectMode?: boolean
+  options?: T[]
+  label?: string
+  disabled?: boolean
+  width?: string | number
+  optionLabel?: keyof T
 }
 
 const props = withDefaults(defineProps<Props>(), {
   selectMode: false,
   options: () => [],
   disabled: false,
-  width: "100%",
+  width: '100%',
   selectedItem: null,
-});
+})
 
 const emit = defineEmits<{
-  "update:inputValue": [string];
-  "update:selectedItem": [Option | null];
-  select: [any];
-}>();
+  'update:inputValue': [value: string]
+  'update:selectedItem': [value: T | null]
+  select: [value: T | null]
+}>()
 
-const containerRef = ref<HTMLElement | null>(null);
-const isOpen = ref(false); // Dropdown open state
-const isFocused = ref(false); // Input focus state
-//const selectedItem = ref(null); // Currently selected item
-// Computed to disable input if selectMode is active and item is selected
-const isInputDisabled = computed(function () {
-  return props.disabled || (props.selectMode && !!props.selectedItem);
-});
+const containerRef = ref<HTMLElement | null>(null)
+const isOpen = ref(false)
+const isFocused = ref(false)
 
-// Emit input value changes
-function onInput(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  emit("update:inputValue", value);
+const isInputDisabled = computed(() => {
+  return props.disabled || (props.selectMode && !!props.selectedItem)
+})
+
+function onInput(event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  emit('update:inputValue', value)
 }
 
-// Open dropdown on input focus if options exist
-function onFocus(): void {
-  isFocused.value = true;
+function onFocus() {
+  isFocused.value = true
   if (props.options?.length) {
-    isOpen.value = true;
+    isOpen.value = true
   }
 }
 
-// Select an option from dropdown
-function selectItem(opt: Option): void {
-  // selectedItem.value = getValue(opt); // Update selected item
-  emit("select", getValue(opt)); // Emit selected value
-  emit("update:inputValue", ""); // Clear input
-  emit("update:selectedItem", getValue(opt)); // Update selected item
-  isOpen.value = false; // Close dropdown
+function selectItem(opt: T) {
+  emit('select', opt)
+  emit('update:inputValue', '')
+  emit('update:selectedItem', opt)
+  isOpen.value = false
 }
 
-// Clear input or selected item
-function clearInput(): void {
+function clearInput() {
   if (props.selectedItem) {
-    emit("update:selectedItem", null); // Clear selected item
-    emit("select", null); // Deselect item
+    emit('update:selectedItem', null)
+    emit('select', null)
   } else {
-    emit("update:inputValue", ""); // Clear input value
+    emit('update:inputValue', '')
   }
-  isOpen.value = false; // Close dropdown
+  isOpen.value = false
 }
 
-// Get display label for an option
-function getLabel(opt: Option): string {
-  if (!opt) return "";
-
-  if (props.optionLabel && typeof opt === "object") {
-    return opt[props.optionLabel];
+function getLabel(option: T): string {
+  if (props.optionLabel) {
+    return String(option[props.optionLabel])
   }
-
-  if (typeof opt === "object" && "label" in opt) {
-    return opt.label;
+  if ('label' in option) {
+    return String(option.label)
   }
-
-  // For primitive values
-  return String(opt);
+  return String(option)
 }
 
-// Get internal value for an option
-function getValue(opt: Option) {
-  if (!opt) return null;
-
-  if (props.optionValue && typeof opt === "object") {
-    return opt[props.optionValue];
-  }
-
-  if (typeof opt === "object" && "value" in opt) {
-    return opt.value;
-  }
-
-  // For primitive values
-  return opt;
-}
-
-// Close dropdown when clicking outside of the component
-function handleClickOutside(event: MouseEvent): void {
-  if (!containerRef.value) return;
-  const input = containerRef.value.querySelector("input");
-  if (
-    !containerRef.value.contains(event.target as Node) &&
-    document.activeElement !== input
-  ) {
-    isOpen.value = false;
-    isFocused.value = false;
+function handleClickOutside(event: MouseEvent) {
+  if (!containerRef.value) return
+  if (!containerRef.value.contains(event.target as Node)) {
+    isOpen.value = false
+    isFocused.value = false
   }
 }
 
-// Automatically open/close dropdown when options change
 watch(
   () => props.options?.length,
-  function (len) {
+  (len) => {
     if (isFocused.value && len && props.selectMode) {
-      isOpen.value = true;
+      isOpen.value = true
     } else {
-      isOpen.value = false;
+      isOpen.value = false
     }
-  },
-);
+  }
+)
 
-// Add/remove document click listener
-onMounted(function () {
-  document.addEventListener("click", handleClickOutside);
-});
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
 
-onBeforeUnmount(function () {
-  document.removeEventListener("click", handleClickOutside);
-});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped lang="scss">

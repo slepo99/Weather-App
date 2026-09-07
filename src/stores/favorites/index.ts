@@ -35,7 +35,6 @@ export const useFavoritesStore = defineStore("favorites", {
     },
     toggleFavorite(city: FormattedWeather): ToggleFavoriteResult {
       const index = this.favoriteCities.findIndex((c) => c.id === city.id);
-      console.log(city);
       if (index !== -1) {
         this.favoriteCities.splice(index, 1);
         this.saveFavoritesToStorage();

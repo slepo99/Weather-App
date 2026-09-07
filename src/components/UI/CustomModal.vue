@@ -1,10 +1,10 @@
 <template>
   <Transition name="modal">
-    <div v-if="isOpen" class="custom-modal" @click.self="close">
+    <div v-if="props.isOpen" class="custom-modal" @click.self="close">
       <div class="custom-modal__content">
         <slot name="title"></slot>
         <slot name="description"></slot>
-        <slot name="actions" :close="close" :submit="submit">qwe</slot>
+        <slot name="actions" :close="close" :submit="submit"></slot>
       </div>
     </div>
   </Transition>
