@@ -1,4 +1,4 @@
-export function openWeatherIconUrl(icon: string, size: string = "2x") {
+export function openWeatherIconUrl(icon: string) {
   return `https://openweathermap.org/payload/api/media/file/${icon}.png`;
 }
 
