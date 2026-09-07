@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
   height: 32px;
   width: 100%;
-  z-index: 3;
+  z-index: 6;
   overflow: hidden;
 }
 .custom-dropdown:hover {
@@ -144,7 +144,7 @@ onBeforeUnmount(() => {
   transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.25s ease;
-  z-index: 2;
+  z-index: 4;
   max-height: 240px;
 }
 

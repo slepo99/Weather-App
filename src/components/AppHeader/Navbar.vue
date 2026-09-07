@@ -1,5 +1,5 @@
 <template>
-  <nav class="app-header__nav">
+  <nav class="app-header__nav" :style="navStyles">
     <router-link
       v-for="route in navRoutes"
       :key="route.path"
@@ -15,6 +15,17 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { computed } from "vue";
+import type { CSSProperties } from 'vue';
+
+const props = withDefaults(
+  defineProps<{
+    isVertical?: boolean;
+  }>(),
+  {
+    isVertical: false,
+  },
+);
 
 const { t } = useI18n();
 const router = useRouter();
@@ -22,15 +33,18 @@ const navRoutes = router.options.routes.filter(
   (r): r is typeof r & { meta: { titleKey: string } } =>
     !!r.meta && typeof r.meta.titleKey === "string",
 );
+const navStyles = computed<CSSProperties>(() => ({
+  flexDirection: props.isVertical ? "column" : "row",
+}));
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .app-header__nav {
   display: flex;
   gap: 12px;
   overflow-x: auto;
   scrollbar-width: none;
-  width: 100%;
+  width: fit-content;
 }
 .app-header__nav::-webkit-scrollbar {
   display: none;
@@ -47,6 +61,10 @@ const navRoutes = router.options.routes.filter(
   font-weight: 500;
   transition: all 300ms ease;
   position: relative;
+  @media (max-width: 900px) {
+    font-size: 18px;
+    padding: 4px 8px;
+  }
 }
 .nav-item:hover {
   color: color-mix(in srgb, var(--btn-bg) 90%, black);

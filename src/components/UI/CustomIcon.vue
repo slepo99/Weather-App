@@ -1,79 +1,127 @@
 <template>
   <div class="custom-icon" :style="containerStyle">
-    <img
-      v-if="isRemote"
-      :src="remoteUrl"
-      :alt="props.name"
-      :style="imageStyle"
-      class="icon-image"
+    <div v-if="isRemote" class="icon-remote">
+      <CustomLoadrer v-if="isLoading && !hasError" :width="imageStyle.width" />
+
+      <img
+        v-show="!isLoading && !hasError"
+        :src="props.name"
+        :alt="props.name"
+        :style="imageStyle"
+        @load="isLoading = false"
+        @error="hasError = true"
+        class="icon-image"
+      />
+
+      <span v-if="hasError" class="icon-fallback">?</span>
+    </div>
+
+    <component
+      v-else-if="IconComponent"
+      :is="IconComponent"
+      :style="svgStyle"
+      class="icon-svg"
     />
-    <img
-      v-else-if="isLocal && localUrl"
-      :src="localUrl"
-      :alt="props.name"
-      :style="imageStyle"
-      class="icon-image"
-    />
+
+    <span v-else class="icon-fallback">?</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, defineAsyncComponent, ref, watch } from "vue";
+import CustomLoadrer from "./CustomLoader.vue";
 
 const props = withDefaults(
   defineProps<{
     name: string;
     size?: string | number;
     backgroundColor?: string;
+    color?: string;
   }>(),
   {
-    size: 24,
     backgroundColor: "transparent",
+    color: "var(--icon)",
   },
 );
 
-const isRemote = computed(() => {
-  return props.name.startsWith("http://") || props.name.startsWith("https://");
-});
-const remoteUrl = computed(() => (isRemote.value ? props.name : ""));
-const isLocal = computed(() => !isRemote.value && !!props.name);
+const isLoading = ref(true);
+const hasError = ref(false);
 
-const localUrl = computed(() => {
-  if (!isLocal.value) return "";
-  try {
-    return new URL(`/src/assets/icons/${props.name}.svg`, import.meta.url).href;
-  } catch (err) {
-    console.warn(`[AppIcon] Local icon not found: ${props.name}.svg`);
-    return "";
+const isRemote = computed(
+  () => props.name.startsWith("http://") || props.name.startsWith("https://"),
+);
+
+watch(
+  () => props.name,
+  () => {
+    isLoading.value = true;
+    hasError.value = false;
+  },
+  { immediate: true },
+);
+
+const IconComponent = computed(() => {
+  if (isRemote.value || !props.name) return null;
+
+  return defineAsyncComponent(() =>
+    import(`../../assets/icons/${props.name}.svg`).catch((err) => {
+      console.warn(`[CustomIcon] Icon not found: ${props.name}.svg`, err);
+
+      return { render: () => null };
+    }),
+  );
+});
+
+const getSize = computed(() => {
+  if (props.size === undefined || props.size === null || props.size === "") {
+    return "100%";
   }
+
+  return typeof props.size === "number" ? `${props.size}px` : props.size;
 });
 
 const containerStyle = computed(() => ({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  width: getSize.value,
-  height: getSize.value,
   backgroundColor: props.backgroundColor,
+  borderRadius: "50%",
 }));
+
 const imageStyle = computed(() => ({
   width: getSize.value,
   height: getSize.value,
   objectFit: "contain" as const,
 }));
 
-const getSize = computed(() => {
-  if (typeof props.size === "number") return `${props.size}px`;
-  return props.size || "20px";
-});
+const svgStyle = computed(() => ({
+  width: getSize.value,
+  height: getSize.value,
+  fill: props.color,
+}));
 </script>
 
 <style scoped>
 .custom-icon {
-  border-radius: 50%;
-  display: flex;
+  line-height: 0;
+}
+
+.icon-svg {
+  display: block;
+}
+
+.icon-image {
+  display: block;
+}
+
+.icon-fallback {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 0;
+  font-size: 12px;
+  opacity: 0.6;
+}
+.icon-remote {
+  width: 100%;
 }
 </style>

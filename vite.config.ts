@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path';
-// https://vite.dev/config/
+import svgLoader from 'vite-svg-loader'
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(),
+    svgLoader({
+      svgo: true,
+    }),
+  ],
   server: {
     port: 3000,
   },

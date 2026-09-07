@@ -1,8 +1,8 @@
+//./src/components/UI/CustomSwitch.vue
 <template>
   <div class="switch-wrapper">
     <slot name="label-left">
-      <div class="label-left">
-      </div>
+      <div class="label-left"></div>
     </slot>
     <div
       class="switch"
@@ -23,29 +23,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean;
+    isActive?: boolean;
     disabled?: boolean;
     keepColor?: boolean;
   }>(),
   {
-    modelValue: false,
+    isActive: false,
     disabled: false,
     keepColor: false,
   },
 );
-const emit = defineEmits(["update:modelValue", "change"]);
-const isActive = computed(() => {
-  return props.modelValue;
-});
+const emit = defineEmits(["update"]);
+
 function toggle() {
   if (props.disabled) return;
-  const newValue = !props.modelValue;
-  emit("update:modelValue", newValue);
-  emit("change", newValue);
+  emit("update", !props.isActive);
 }
 </script>
 
@@ -54,6 +48,7 @@ function toggle() {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
   gap: 6px;
 }
 .switch {
@@ -68,7 +63,6 @@ function toggle() {
   cursor: not-allowed;
 }
 
-/* Track */
 .switch__track {
   width: 100%;
   height: 100%;
@@ -77,7 +71,6 @@ function toggle() {
   transition: 0.2s;
 }
 
-/* Thumb */
 .switch__thumb {
   position: absolute;
   top: 2px;
@@ -103,5 +96,4 @@ function toggle() {
 .switch--select .switch__track {
   background: #018786;
 }
-
 </style>

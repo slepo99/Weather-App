@@ -11,43 +11,80 @@
           />
           <span class="app-logo__title">Weather App</span>
         </div>
-        <CustomInput
-          v-if="router.currentRoute.value.fullPath === ROUTES.HOME"
-          v-model:inputValue="searchQuery"
-          :selectMode="true"
-          :options="arr"
-          :selectedItem="selectedCity"
-          @update:inputValue="searchCity"
-          @update:selectedItem="selectCity"
-        />
+        <div v-if="isDesktopSearchVisible" class="app-header__search">
+          <CustomInput
+            v-model:inputValue="weatherStore.searchQuery"
+            v-model:selected-item="weatherStore.selectedCity"
+            :label="t('header.search.inputPlaceholder')"
+            selectMode
+            :options="cities"
+            option-label="label"
+            @update:inputValue="searchCity"
+            class="app-header__search-input"
+          />
 
-        <CustomBtn>
-          <template #label> Додати місто </template>
-        </CustomBtn>
+          <CustomBtn
+            :disabled="!weatherStore.selectedCity"
+            width="120px"
+            @click="loadCityWeather"
+          >
+            <template #label> {{ t("header.search.buttonLabel") }} </template>
+          </CustomBtn>
+        </div>
       </div>
-      <div class="app-header__right">
+      <div v-if="!isMobile" class="app-header__right">
         <CustomDropdown
           v-model="locale"
           :options="availableLocales"
           width="70px"
         />
         <CustomSwitch
-          :modelValue="themeStore.isDark"
-          @change="themeStore.toggleTheme"
+          :isActive="themeStore.isDark"
+          @update="themeStore.toggleTheme"
           keepColor
         >
           <template #label-left>
-            <CustomIcon name="sun" />
+            <CustomIcon name="sun" size="24px" />
           </template>
           <template #label-right>
-            <CustomIcon name="moon" />
+            <CustomIcon name="moon" size="24px" />
           </template>
         </CustomSwitch>
       </div>
+      <div v-else>
+        <CustomBurgerBtn
+          :isActive="isSidebarActive"
+          @click.stop="toggleSidebar"
+        />
+      </div>
     </div>
-    <CustomDivider class="app-header__divider"/>
+    <CustomDivider class="app-header__divider" />
     <div class="app-header__bottom">
-      <Navbar/>
+      <div
+        v-if="isMobileSearchVisible"
+        class="app-header__search"
+        id="search-mobile"
+      >
+        <CustomInput
+          v-model:inputValue="weatherStore.searchQuery"
+          v-model:selected-item="weatherStore.selectedCity"
+          :label="t('header.search.inputPlaceholder')"
+          selectMode
+          :options="cities"
+          option-label="label"
+          @update:inputValue="searchCity"
+          class="app-header__search-input"
+        />
+
+        <CustomBtn
+          :disabled="!weatherStore.selectedCity"
+          :width="isMobile ? '100%' : 'auto'"
+          @click="loadCityWeather"
+        >
+          <template #label> {{ t("header.search.buttonLabel") }} </template>
+        </CustomBtn>
+      </div>
+      <Navbar v-if="!isMobile" />
     </div>
   </header>
 </template>
@@ -57,44 +94,67 @@ import CustomInput from "@/components/UI/CustomInput.vue";
 import { useThemeStore } from "@/stores/theme";
 import { useRouter } from "vue-router";
 import { ROUTES } from "@/constants/routes";
-import { ref } from "vue";
+import { computed } from "vue";
 import CustomBtn from "../UI/CustomBtn.vue";
 import CustomDropdown from "../UI/CustomDropdown.vue";
 import CustomSwitch from "../UI/CustomSwitch.vue";
 import CustomIcon from "../UI/CustomIcon.vue";
 import CustomDivider from "../UI/CustomDivider.vue";
 import Navbar from "./Navbar.vue";
+import { useResponsive } from "@/composables/useResponsive";
+import { useWeatherStore } from "@/stores/weather";
 
-import { useI18n } from 'vue-i18n'
 
-const { locale, availableLocales } = useI18n()
+import { useI18n } from "vue-i18n";
+import CustomBurgerBtn from "../UI/CustomBurgerBtn.vue";
+import { useHeader } from "@/composables/useHeader";
+
+const { loadCityWeather, searchCity, cities } = useHeader();
+const props = withDefaults(
+  defineProps<{
+    isSidebarActive: boolean;
+  }>(),
+  {
+    isSidebarActive: false,
+  },
+);
+const emit = defineEmits<{
+  toggleSidebar: [];
+}>();
+const { isMiniDesktop, isMobile, isTablet } = useResponsive();
+const { locale, availableLocales, t } = useI18n();
 
 const themeStore = useThemeStore();
 const router = useRouter();
-const searchQuery = ref("");
-const arr = ref<string[]>([]);
+const weatherStore = useWeatherStore();
 
-
-
-
-function searchCity(val: string) {
-  if (val) {
-    arr.value.push("1");
-  } else {
-    arr.value = [];
-  }
+function toggleSidebar() {
+  emit("toggleSidebar");
 }
-const selectedCity = ref("");
-function selectCity(val: string | number | null) {
-  selectedCity.value = val as string;
-}
+
+const isDesktopSearchVisible = computed(() => {
+  return (
+    !isMiniDesktop.value &&
+    !isTablet.value &&
+    !isMobile.value &&
+    router.currentRoute.value.fullPath === ROUTES.HOME
+  );
+});
+
+const isMobileSearchVisible = computed(() => {
+  return (
+    (isMiniDesktop.value || isTablet.value || isMobile.value) &&
+    router.currentRoute.value.fullPath === ROUTES.HOME
+  );
+});
+
 </script>
 
 <style scoped lang="scss">
 .app-header {
   background-color: var(--content-bg);
   // height: 60px;
-  padding: 16px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -102,7 +162,12 @@ function selectCity(val: string | number | null) {
   border-radius: 0 0 10px 10px;
   background-color: var(--content-bg);
   box-shadow: $block-shadow;
-  
+  @media (max-width: 900px) {
+    padding: 16px;
+  }
+  @media (max-width: 478px) {
+    padding: 12px;
+  }
 }
 .app-header__top {
   display: flex;
@@ -110,6 +175,26 @@ function selectCity(val: string | number | null) {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 16px;
+}
+.app-header__search {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  @media (max-width: 478px) {
+    flex-direction: column;
+    gap: 8px;
+    button {
+      width: 100%;
+    }
+  }
+}
+.app-header__search-input {
+  max-width: 300px;
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
 }
 .app-header__left {
   display: flex;
@@ -125,17 +210,31 @@ function selectCity(val: string | number | null) {
 .app-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
 }
 .app-logo__image {
   width: 40px;
   height: 40px;
+  @media (max-width: 600px) {
+    width: 34px;
+    height: 34px;
+  }
+  @media (max-width: 478px) {
+    width: 24px;
+    height: 24px;
+  }
 }
 .app-logo__title {
   font-size: 32px;
   font-weight: 700;
   white-space: nowrap;
+  @media (max-width: 600px) {
+    font-size: 24px;
+  }
+  @media (max-width: 478px) {
+    font-size: 18px;
+  }
 }
 .custom-btn:disabled {
   opacity: 0.5;
@@ -145,8 +244,17 @@ function selectCity(val: string | number | null) {
 .app-header__divider {
   width: 100%;
   margin: 12px 0;
+  @media (max-width: 478px) {
+    font-size: 8px 0;
+  }
 }
 .app-header__bottom {
   width: 100%;
+  @media (max-width: 900px) {
+    display: flex;
+    flex-direction: column;
+    align-items: unset;
+    gap: 12px;
+  }
 }
 </style>

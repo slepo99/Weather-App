@@ -2,9 +2,10 @@
   <div
     class="input-container"
     ref="containerRef"
-    :style="`max-width: ${props.width}px`"
+    :style="`width: ${props.width}`"
   >
     <div class="input-wrapper">
+      <!-- Main input field -->
       <input
         :value="props.inputValue"
         @input="onInput"
@@ -14,11 +15,16 @@
         type="text"
         class="input-bar"
       />
-     <div v-if="props.selectMode && props.selectedItem" class="input-selected-content">
-        {{ selectedItem }}
+      <div
+        v-if="props.selectMode && selectedItem"
+        class="input-selected-content"
+      >
+        {{ getLabel(selectedItem) }}
       </div>
+
+      <!-- Clear button for input or selected item -->
       <button
-        v-if="props.inputValue || props.selectedItem"
+        v-if="props.inputValue || selectedItem"
         type="button"
         class="input-clear-btn"
         @click="clearInput"
@@ -26,18 +32,20 @@
         ✕
       </button>
     </div>
+
+    <!-- Autocomplete dropdown -->
     <div
       v-if="props.selectMode"
       :class="{ 'input-autocomplete-active': isOpen }"
       class="input-autocomplete"
     >
       <div
-        v-for="(value, i) in props.options"
+        v-for="(opt, i) in props.options"
         :key="i"
         class="autocomplite-element"
       >
-        <div @mousedown="selectItem(value)">
-          {{ value }}
+        <div @mousedown.left="selectItem(opt)">
+          {{ getLabel(opt) }}
         </div>
       </div>
     </div>
@@ -45,73 +53,128 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+type Option = any;
 
 interface Props {
   inputValue: string;
+  selectedItem: Option | null;
   selectMode?: boolean;
-  selectedItem?: string | number;
-  options?: (string | number)[];
+  options?: Option[];
   label?: string;
   error?: string;
   disabled?: boolean;
   width?: string | number;
+  optionLabel?: string;
+  optionValue?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   selectMode: false,
   options: () => [],
   disabled: false,
-  width: '300',
+  width: "100%",
+  selectedItem: null,
 });
+
 const emit = defineEmits<{
-  "update:inputValue": [value: string];          
-  "update:selectedItem": [value: string | number];
+  "update:inputValue": [string];
+  "update:selectedItem": [Option | null];
+  select: [any];
 }>();
 
 const containerRef = ref<HTMLElement | null>(null);
-const isOpen = ref(false);
-const isFocused = ref(false);
-const isInputDisabled = computed(() => {
+const isOpen = ref(false); // Dropdown open state
+const isFocused = ref(false); // Input focus state
+//const selectedItem = ref(null); // Currently selected item
+// Computed to disable input if selectMode is active and item is selected
+const isInputDisabled = computed(function () {
   return props.disabled || (props.selectMode && !!props.selectedItem);
 });
 
-const onInput = (e: Event) => {
-  const value = (e.target as HTMLInputElement).value;
+// Emit input value changes
+function onInput(event: Event): void {
+  const value = (event.target as HTMLInputElement).value;
   emit("update:inputValue", value);
-};
-const onFocus = () => {
+}
+
+// Open dropdown on input focus if options exist
+function onFocus(): void {
   isFocused.value = true;
   if (props.options?.length) {
     isOpen.value = true;
   }
-};
-
-function selectItem(val: string | number) {
-  emit("update:selectedItem", val);
-  emit("update:inputValue", "");
-  isOpen.value = false;
 }
 
-const handleClickOutside = (event: MouseEvent) => {
-  if (!containerRef.value) return;
+// Select an option from dropdown
+function selectItem(opt: Option): void {
+  // selectedItem.value = getValue(opt); // Update selected item
+  emit("select", getValue(opt)); // Emit selected value
+  emit("update:inputValue", ""); // Clear input
+  emit("update:selectedItem", getValue(opt)); // Update selected item
+  isOpen.value = false; // Close dropdown
+}
 
-  if (!containerRef.value.contains(event.target as Node)) {
+// Clear input or selected item
+function clearInput(): void {
+  if (props.selectedItem) {
+    emit("update:selectedItem", null); // Clear selected item
+    emit("select", null); // Deselect item
+  } else {
+    emit("update:inputValue", ""); // Clear input value
+  }
+  isOpen.value = false; // Close dropdown
+}
+
+// Get display label for an option
+function getLabel(opt: Option): string {
+  if (!opt) return "";
+
+  if (props.optionLabel && typeof opt === "object") {
+    return opt[props.optionLabel];
+  }
+
+  if (typeof opt === "object" && "label" in opt) {
+    return opt.label;
+  }
+
+  // For primitive values
+  return String(opt);
+}
+
+// Get internal value for an option
+function getValue(opt: Option) {
+  if (!opt) return null;
+
+  if (props.optionValue && typeof opt === "object") {
+    return opt[props.optionValue];
+  }
+
+  if (typeof opt === "object" && "value" in opt) {
+    return opt.value;
+  }
+
+  // For primitive values
+  return opt;
+}
+
+// Close dropdown when clicking outside of the component
+function handleClickOutside(event: MouseEvent): void {
+  if (!containerRef.value) return;
+  const input = containerRef.value.querySelector("input");
+  if (
+    !containerRef.value.contains(event.target as Node) &&
+    document.activeElement !== input
+  ) {
     isOpen.value = false;
     isFocused.value = false;
   }
-};
-function clearInput() {
-  if (props.selectedItem) {
-    emit("update:selectedItem", "");
-  } else {
-    emit("update:inputValue", "");
-  }
-  isOpen.value = false;
 }
+
+// Automatically open/close dropdown when options change
 watch(
   () => props.options?.length,
-  (len) => {
+  function (len) {
     if (isFocused.value && len && props.selectMode) {
       isOpen.value = true;
     } else {
@@ -120,11 +183,12 @@ watch(
   },
 );
 
-onMounted(() => {
+// Add/remove document click listener
+onMounted(function () {
   document.addEventListener("click", handleClickOutside);
 });
 
-onBeforeUnmount(() => {
+onBeforeUnmount(function () {
   document.removeEventListener("click", handleClickOutside);
 });
 </script>
@@ -154,12 +218,17 @@ onBeforeUnmount(() => {
   box-shadow: $content-shadow;
   border: 0;
 }
+
 .input-wrapper {
   position: relative;
   width: 100%;
   z-index: 3;
 }
+
 .input-autocomplete {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   position: absolute;
   top: 30px;
   background-color: var(--content-bg);
@@ -168,7 +237,6 @@ onBeforeUnmount(() => {
   padding: 8px 0;
   width: 100%;
   overflow: hidden;
-
   transform-origin: top;
   transform: scaleY(0);
   transition: transform 0.25s ease;
@@ -183,7 +251,6 @@ onBeforeUnmount(() => {
 
 .autocomplite-element {
   cursor: pointer;
-  height: 24px;
   padding: 0 8px;
 }
 
@@ -204,6 +271,7 @@ onBeforeUnmount(() => {
   padding: 0;
   z-index: 3;
 }
+
 .input-selected-content {
   position: absolute;
   left: 12px;
@@ -211,7 +279,13 @@ onBeforeUnmount(() => {
   transform: translateY(-50%);
   pointer-events: none;
   color: var(--text);
+  white-space: nowrap;
+  width: -webkit-fill-available;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 24px;
 }
+
 span {
   font-size: 14px;
 }

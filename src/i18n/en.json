@@ -6,6 +6,75 @@
   "weatherCard": {
     "wind": "Wind",
     "humidity": "Humidity",
-    "pressure": "Pressure"
+    "pressure": "Pressure",
+    "windPerSecond": "m/s",
+    "hectopascals": "hPa",
+    "chart": {
+      "mode": {
+        "hour": "Hours",
+        "day": "5 Days"
+      }
+    },
+    "modal": {
+      "title": "Remove city",
+      "message": "Remove this city ?",
+      "confirmButton": "Yes",
+      "cancelButton": "No"
+    },
+
+    "weather": {
+      "clear": "Clear",
+      "fewClouds": "Few clouds",
+      "scatteredClouds": "Scattered clouds",
+      "brokenClouds": "Broken clouds",
+      "overcast": "Overcast",
+
+      "lightRain": "Light rain",
+      "moderateRain": "Rain",
+      "heavyRain": "Heavy rain",
+      "showerRain": "Shower rain",
+      "freezingRain": "Freezing rain",
+
+      "drizzle": "Drizzle",
+
+      "lightSnow": "Light snow",
+      "snow": "Snow",
+      "heavySnow": "Heavy snow",
+      "sleet": "Sleet",
+      "rainSnow": "Rain and snow",
+
+      "thunderstorm": "Thunderstorm",
+
+      "fog": "Fog",
+      "mist": "Mist",
+      "haze": "Haze",
+      "tornado": "Tornado",
+      "atmosphere": "Low visibility",
+
+      "unknown": "Unknown"
+    },
+    "emptyMessage": "No cities added yet"
+  },
+  "header": {
+    "search": {
+      "inputPlaceholder": "City name",
+      "buttonLabel": "Add city",
+      "error": {
+        "maxCities": "You can add up to 5 cities only",
+        "cityNotFound": "City not found",
+        "cityAlreadyAdded": "City already added"
+      }
+    }
+  },
+  "favorites": {
+    "error": {
+      "maxFavorites": "You can add up to 5 cities to favorites only"
+    },
+    "modal": {
+      "message": "Remove this city from favorites ?",
+      "confirmButton": "Yes",
+      "cancelButton": "No"
+    },
+    "emptyMessage": "No favorite cities yet"
   }
 }
